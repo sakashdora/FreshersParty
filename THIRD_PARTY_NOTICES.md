@@ -1,26 +1,33 @@
-# Origin UI
+# Third-Party Notices
 
-The accordion in `src/components/accordion.jsx` is adapted to JavaScript and plain CSS from https://github.com/shadcn/originui/blob/main/registry/default/ui/accordion.tsx.
-Original license: https://github.com/shadcn/originui/blob/main/LICENSE.md.
+## Google Fonts
 
-MIT License
+Fraunces and Outfit are served via Google Fonts (fonts.googleapis.com).
+These fonts are open-source and licensed under the SIL Open Font License, Version 1.1.
 
-Copyright (c) 2025 Origin UI
+- Fraunces: https://fonts.google.com/specimen/Fraunces — Phaedra Charles, Flavia Zimbardi
+- Outfit: https://fonts.google.com/specimen/Outfit — Rodrigo Fuenzalida
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+## Audio Assets (Mixkit Free License)
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The following royalty-free sound effects were downloaded into `public/audio/` and are used under the Mixkit Free License:
+https://mixkit.co/license/
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+- `cinematic-swell.mp3`: Mixkit Sound Effects Library (Cinematic Swell / Rise)
+- `cinematic-reveal.mp3`: Mixkit Sound Effects Library (Warm Tonal Accent / Chime)
+- `paper-rustle.mp3`: Mixkit Sound Effects Library (Paper Envelope Rustle & Slide)
+
+## motion (Motion for React)
+
+Animation library provided by Motion / Framer Motion (MIT License).
+https://motion.dev — Copyright © Framer B.V.
+
+## canvas-confetti
+
+Celebration particle effects provided by canvas-confetti (ISC License).
+https://github.com/catdad/canvas-confetti — Copyright © Kiril Vatev
+
+## lucide-react
+
+Icons provided by lucide-react (MIT License).
+https://lucide.dev — Copyright © Lucide Contributors
