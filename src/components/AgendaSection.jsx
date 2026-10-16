@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   Clock, Gamepad2, Music, Award, Users, Utensils,
-  Flame, Mic2, Compass, CheckCircle2, ChevronRight,
+  Flame, Mic2, Compass, CheckCircle2, ChevronDown,
   Crown, CalendarPlus, Download, MapPin, Music2,
-  Calendar, Layers, Check
+  Calendar, Layers, Check, Sparkles
 } from 'lucide-react';
 import { playMicroTap } from '../utils/audio';
-
-
 
 const AGENDA_ITEMS = [
   // --- ACT I: CEREMONIAL OVERTURE ---
@@ -20,7 +19,7 @@ const AGENDA_ITEMS = [
     title: "Arrival & Batch Reception",
     category: "Welcome & Seating",
     badgeType: "welcome",
-    desc: "Doors open at JRD Tata Hall. Badge collection, commemorative welcome kits, guest registration, and hall seating.",
+    desc: "Doors open at JRD Tata Hall. Badge collection, commemorative welcome kits, guest registration, and batch seating.",
     isMajor: false,
     isFlagship: false,
     icon: Compass,
@@ -241,13 +240,24 @@ const AGENDA_ITEMS = [
 ];
 
 export default function AgendaSection() {
-  const [expandedItem, setExpandedItem] = useState(null);
+  const [openSessionId, setOpenSessionId] = useState(2); // Default open to Inaugural Odissi
+  const [selectedAct, setSelectedAct] = useState('all');
   const [copiedNotification, setCopiedNotification] = useState(false);
 
-  const toggleExpand = (id) => {
+  const toggleAccordion = (id) => {
     playMicroTap();
-    setExpandedItem(expandedItem === id ? null : id);
+    setOpenSessionId(openSessionId === id ? null : id);
   };
+
+  const handleActFilter = (actKey) => {
+    playMicroTap();
+    setSelectedAct(actKey);
+  };
+
+  const filteredItems = AGENDA_ITEMS.filter((item) => {
+    if (selectedAct === 'all') return true;
+    return item.act === selectedAct;
+  });
 
   const handleGoogleCalendar = () => {
     playMicroTap();
@@ -265,7 +275,6 @@ export default function AgendaSection() {
       "Venue: JRD Tata Hall, Srusti Academy of Management & Technology, Bhubaneswar."
     );
     const location = encodeURIComponent("JRD Tata Hall, Srusti Academy of Management & Technology, Bhubaneswar");
-    // 30 Oct 2026: 10:00 AM IST to 5:00 PM IST (04:30 UTC to 11:30 UTC)
     const dates = "20261030T043000Z/20261030T113000Z";
     window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`, '_blank');
   };
@@ -326,21 +335,19 @@ export default function AgendaSection() {
     }
   };
 
-
-
   return (
     <section className="agenda-section" id="agenda-flow" aria-label="Official Freshers Day Agenda">
       <div className="section-container">
         {/* Curated Editorial Section Header */}
         <div className="agenda-master-header">
           <div className="agenda-eyebrow-pill">
-            <span className="pill-dot">◆</span>
+            <span className="pill-dot">✦</span>
             <span>OFFICIAL ITINERARY · 30 OCTOBER 2026</span>
-            <span className="pill-dot">◆</span>
+            <span className="pill-dot">✦</span>
           </div>
 
           <h2 className="agenda-master-title">
-            Freshers Day Master Programme
+            Freshers Day Programme Schedule
           </h2>
 
           <p className="agenda-master-description">
@@ -408,12 +415,56 @@ export default function AgendaSection() {
               <span>{copiedNotification ? 'Schedule Copied!' : 'Copy Summary'}</span>
             </button>
           </div>
+
+          {/* Act Navigation Filter Tabs */}
+          <div className="agenda-act-tabs" role="tablist" aria-label="Filter programme acts">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={selectedAct === 'all'}
+              className={`act-tab-btn ${selectedAct === 'all' ? 'is-active' : ''}`}
+              onClick={() => handleActFilter('all')}
+            >
+              <span>Complete Schedule</span>
+              <span className="tab-count-badge">13</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={selectedAct === 'act-1'}
+              className={`act-tab-btn ${selectedAct === 'act-1' ? 'is-active' : ''}`}
+              onClick={() => handleActFilter('act-1')}
+            >
+              <span>Act I · Overture</span>
+              <span className="tab-count-badge">3</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={selectedAct === 'act-2'}
+              className={`act-tab-btn ${selectedAct === 'act-2' ? 'is-active' : ''}`}
+              onClick={() => handleActFilter('act-2')}
+            >
+              <span>Act II · Spotlight &amp; Feast</span>
+              <span className="tab-count-badge">3</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={selectedAct === 'act-3'}
+              className={`act-tab-btn ${selectedAct === 'act-3' ? 'is-active' : ''}`}
+              onClick={() => handleActFilter('act-3')}
+            >
+              <span>Act III · Revelry &amp; Finale</span>
+              <span className="tab-count-badge">7</span>
+            </button>
+          </div>
         </div>
 
-        {/* Master Timeline Flow Container */}
-        <div className="agenda-curated-timeline">
-          {AGENDA_ITEMS.map((item, index) => {
-            // Render Intermission Buffer Item
+        {/* Master Accordion Flow */}
+        <div className="agenda-accordion-wrapper" role="region" aria-label="Interactive Programme Accordion">
+          {filteredItems.map((item, index) => {
+            // Buffer Node between acts
             if (item.isBuffer) {
               return (
                 <div key={`buffer-${index}`} className="agenda-buffer-node" aria-hidden="true">
@@ -430,103 +481,103 @@ export default function AgendaSection() {
 
             const Icon = item.icon;
             const isFlagship = item.isFlagship;
-            const isExpanded = expandedItem === item.id;
+            const isOpen = openSessionId === item.id;
 
             return (
-              <article
+              <div
                 key={item.id}
-                className={`agenda-card ${isFlagship ? 'is-flagship' : ''} ${item.isMajor ? 'is-major' : ''} type-${item.badgeType}`}
-                onClick={() => toggleExpand(item.id)}
-                tabIndex={0}
-                role="button"
-                aria-expanded={isExpanded}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleExpand(item.id);
-                  }
-                }}
+                className={`agenda-accordion-item ${isOpen ? 'is-open' : ''} ${isFlagship ? 'is-flagship' : ''}`}
               >
-                {/* Left Gilded Time Pillar */}
-                <div className="agenda-card-sidebar">
-                  <div className="time-badge-box">
-                    <span className="time-primary">{item.time}</span>
-                    <span className="duration-pill">{item.duration}</span>
-                  </div>
-                  <span className="act-tag-indicator">{item.actLabel}</span>
-                </div>
-
-                {/* Main Content Body */}
-                <div className="agenda-card-main">
-                  <div className="card-header-line">
-                    <div className="category-and-flagship">
-                      <span className={`agenda-badge badge-${item.badgeType}`}>
-                        {item.category}
-                      </span>
-                      {isFlagship && (
-                        <span className="flagship-crown-badge">
-                          <Crown size={12} className="crown-icon" />
-                          <span>{item.flagshipTag}</span>
-                        </span>
-                      )}
+                {/* Accordion Row Trigger */}
+                <button
+                  type="button"
+                  className="agenda-accordion-header"
+                  onClick={() => toggleAccordion(item.id)}
+                  aria-expanded={isOpen}
+                  aria-controls={`session-panel-${item.id}`}
+                  id={`session-header-${item.id}`}
+                >
+                  <div className="header-left-col">
+                    <div className="session-time-block">
+                      <span className="session-time-text">{item.time}</span>
+                      <span className="session-duration-tag">{item.duration}</span>
                     </div>
 
-                    <div className="card-icon-halo" aria-hidden="true">
-                      <Icon size={18} />
-                    </div>
-                  </div>
-
-                  <h3 className="card-event-title">
-                    {item.title}
-                  </h3>
-
-                  {item.subtitle && (
-                    <p className="card-event-subtitle">
-                      {item.subtitle}
-                    </p>
-                  )}
-
-                  <p className="card-event-description">
-                    {item.desc}
-                  </p>
-
-                  {/* Curated Highlights Chips */}
-                  {item.highlights && item.highlights.length > 0 && (
-                    <div className="card-highlights-row">
-                      {item.highlights.map((h, hIdx) => (
-                        <span key={hIdx} className="highlight-mini-chip">
-                          <span className="mini-dot">✦</span>
-                          <span>{h}</span>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Expandable Coordination Note */}
-                  {isExpanded && (
-                    <div className="card-expanded-drawer">
-                      <div className="drawer-inner">
-                        <span className="drawer-label">VENUE COORDINATION NOTE:</span>
-                        <p className="drawer-text">
-                          {item.id === 2 && "Traditional Odissi blessing troupe opens the stage. Attendees are kindly requested to be seated by 10:25 AM."}
-                          {item.id === 4 && "Batch 2026–2028 representatives will be invited onto the dais. Keep cameras and phones ready for batch portraits!"}
-                          {item.id === 6 && "Multi-course feast served at the campus dining arena. Vegetarian and regional Odia culinary specialties included."}
-                          {item.id === 11 && "Official voting was completed during preliminary rounds. Royal sashes and commemorative trophies presented on center stage."}
-                          {item.id === 13 && "Grand sound system with bass drops and club lighting. Open floor welcoming all juniors, seniors, and alumni!"}
-                          {![2, 4, 6, 11, 13].includes(item.id) && "Organized by the Senior MCA Steering Committee in collaboration with faculty mentors at JRD Tata Hall."}
-                        </p>
+                    <div className="session-title-cluster">
+                      <div className="session-title-row">
+                        <h3 className="session-name">{item.title}</h3>
+                        {isFlagship && (
+                          <span className="flagship-badge">
+                            <Crown size={11} />
+                            <span>{item.flagshipTag}</span>
+                          </span>
+                        )}
                       </div>
+                      <span className="session-category-label">{item.category}</span>
                     </div>
-                  )}
-
-                  <div className="card-footer-action">
-                    <span className="expand-prompt">
-                      {isExpanded ? 'Hide details' : 'View event notes'}
-                    </span>
-                    <ChevronRight size={13} className={`expand-chevron ${isExpanded ? 'is-rotated' : ''}`} />
                   </div>
-                </div>
-              </article>
+
+                  <div className="header-right-col">
+                    <div className="session-icon-disc" aria-hidden="true">
+                      <Icon size={16} />
+                    </div>
+                    <div className={`accordion-chevron-box ${isOpen ? 'is-open' : ''}`} aria-hidden="true">
+                      <ChevronDown size={16} />
+                    </div>
+                  </div>
+                </button>
+
+                {/* Smooth Animated Height Drawer */}
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      id={`session-panel-${item.id}`}
+                      role="region"
+                      aria-labelledby={`session-header-${item.id}`}
+                      className="agenda-accordion-drawer"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      <div className="drawer-content-box">
+                        {item.subtitle && (
+                          <p className="drawer-subtitle">
+                            {item.subtitle}
+                          </p>
+                        )}
+
+                        <p className="drawer-description">
+                          {item.desc}
+                        </p>
+
+                        {item.highlights && item.highlights.length > 0 && (
+                          <div className="drawer-highlights-row">
+                            {item.highlights.map((h, hIdx) => (
+                              <span key={hIdx} className="highlight-tag">
+                                <span className="highlight-dot">✦</span>
+                                <span>{h}</span>
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        <div className="drawer-coordination-note">
+                          <span className="coord-note-label">COORDINATION PROTOCOL:</span>
+                          <span className="coord-note-text">
+                            {item.id === 2 && "Traditional Odissi blessing troupe opens the stage. Attendees are kindly requested to be seated by 10:25 AM."}
+                            {item.id === 4 && "Batch 2026–2028 representatives will be invited onto the dais. Keep cameras and phones ready for batch portraits!"}
+                            {item.id === 6 && "Multi-course feast served at the campus dining arena. Vegetarian and regional Odia culinary specialties included."}
+                            {item.id === 11 && "Official voting was completed during preliminary rounds. Royal sashes and commemorative trophies presented on center stage."}
+                            {item.id === 13 && "Grand sound system with bass drops and club lighting. Open floor welcoming all juniors, seniors, and alumni!"}
+                            {![2, 4, 6, 11, 13].includes(item.id) && "Organized by the Senior MCA Steering Committee in collaboration with faculty mentors at JRD Tata Hall."}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             );
           })}
         </div>

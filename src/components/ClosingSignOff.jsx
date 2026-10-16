@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ArrowUp, Calendar, MapPin, ExternalLink,
-  Clock, Compass, Award, Mail, Phone, ChevronRight
+  Clock, Compass, Award, Mail, Phone, ChevronRight, Heart
 } from 'lucide-react';
 import { playMicroTap } from '../utils/audio';
 
@@ -21,6 +21,27 @@ export default function ClosingSignOff() {
       <div className="signoff-top-border" aria-hidden="true" />
 
       <div className="section-container">
+        {/* Warm Letter Closure Parchment Card (Circular Narrative Climax) */}
+        <div className="signoff-letter-card">
+          <div className="letter-card-seal" aria-hidden="true">
+            <span>T</span>
+          </div>
+          <div className="letter-card-body">
+            <span className="letter-card-eyebrow">A FINAL WORD FROM YOUR SENIORS</span>
+            <h3 className="letter-card-heading">“With Warm Wishes and Excitement”</h3>
+            <p className="letter-card-prose">
+              College life is defined not just by examinations and algorithms, but by the friends we make, the challenges we overcome together, and the memories we create. We have poured our hearts into curating an unforgettable welcome for Batch 2026–2028.
+            </p>
+            <p className="letter-card-signoff">
+              Let us celebrate this new beginning together on <strong>30 October 2026</strong>.
+            </p>
+            <div className="letter-card-signature">
+              <strong>Your Seniors</strong>
+              <span>Department of Computer Applications · Srusti Academy of Management &amp; Technology</span>
+            </div>
+          </div>
+        </div>
+
         {/* Master Seal & Crest Centerpiece */}
         <div className="signoff-brand-marquee">
           <div className="signoff-hallmark-crest" aria-hidden="true">
@@ -40,9 +61,6 @@ export default function ClosingSignOff() {
           </h2>
           <p className="signoff-thematic-tagline">
             The Fresh Bloom · Senior Welcoming Gala
-          </p>
-          <p className="signoff-dedication-note">
-            Presented with affection, honor, and solidarity by the senior MCA batch for our incoming juniors of Batch 2026–2028.
           </p>
         </div>
 
@@ -109,12 +127,12 @@ export default function ClosingSignOff() {
           {/* Column 3: Quick Navigation */}
           <div className="signoff-grid-col col-navigation">
             <span className="col-eyebrow">EXPLORE INVITATION</span>
-            <h3 className="col-heading">Experience Navigation</h3>
+            <h3 className="col-heading">Quick Navigation</h3>
 
             <nav className="signoff-nav-list" aria-label="Footer quick navigation">
               <a href="#invitation-envelope" className="footer-nav-link" onClick={handleNavClick}>
                 <ChevronRight size={12} className="link-arrow" />
-                <span>The Royal Invitation Letter</span>
+                <span>The Invitation Letter</span>
               </a>
               <a href="#milestones" className="footer-nav-link" onClick={handleNavClick}>
                 <ChevronRight size={12} className="link-arrow" />
@@ -122,15 +140,15 @@ export default function ClosingSignOff() {
               </a>
               <a href="#agenda-flow" className="footer-nav-link" onClick={handleNavClick}>
                 <ChevronRight size={12} className="link-arrow" />
-                <span>Master Programme Itinerary (13 Sessions)</span>
+                <span>Programme Schedule (13 Moments)</span>
               </a>
               <a href="#gallery" className="footer-nav-link" onClick={handleNavClick}>
                 <ChevronRight size={12} className="link-arrow" />
-                <span>Campus Spirit &amp; Moments</span>
+                <span>Visual Gallery &amp; Film</span>
               </a>
               <a href="#celebration-cheers" className="footer-nav-link" onClick={handleNavClick}>
                 <ChevronRight size={12} className="link-arrow" />
-                <span>Sound the Batch Cheers</span>
+                <span>Send Batch Cheers</span>
               </a>
             </nav>
 
@@ -157,7 +175,7 @@ export default function ClosingSignOff() {
           <p className="copyright-statement">
             © 2026 Department of Computer Applications · Srusti Academy of Management &amp; Technology.
             <span className="sep-dot">·</span>
-            Curated by the Senior MCA Batch for Incoming Juniors (2026–2028).
+            Curated with pride by the Senior MCA Batch for Incoming Juniors (2026–2028).
           </p>
 
           <div className="signoff-cohort-tag">

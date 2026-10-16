@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, Volume2 } from 'lucide-react';
+import { Volume2, VolumeX, ArrowRight, Sparkles, ChevronDown } from 'lucide-react';
 import {
   playCinematicSwell,
-  playRibbonMotionSweep,
   playCelestialRevealChime,
   playMilestoneSlideTick,
   playSkipTransition,
@@ -13,52 +12,48 @@ import {
 } from '../utils/audio';
 
 export default function CinematicIntro({ onComplete }) {
-  // Phase 0: 0-1.4s (Atmospheric emergence & ribbons glide)
-  // Phase 1: 1.4-3.0s (Kinetic TEJAS '26 title reveal & warm concert chime)
-  // Phase 2: 3.0-4.6s (Two milestone coordinates reveal)
-  // Phase 3: 4.6-5.8s (Smooth dissolve & gateway transition)
+  // Phases: 0 (Cosmos Emergence), 1 (Monumental Typography & Sacred Bloom), 2 (Dual Milestone Gateway), 3 (Entrance Ready)
   const [phase, setPhase] = useState(0);
-  const [audioPromptVisible, setAudioPromptVisible] = useState(true);
+  const [isAudioActive, setIsAudioActive] = useState(false);
   const canvasRef = useRef(null);
   const hasFinishedRef = useRef(false);
 
-  // 1. Audio Choreography & Browser Gesture Handling
   useEffect(() => {
     initGlobalAudioUnlock(() => {
-      setAudioPromptVisible(false);
+      setIsAudioActive(true);
     });
 
-    // Sequence Choreography & Orchestral Sound Effects
-    playCinematicSwell();
-    playRibbonMotionSweep();
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        playSkipTransition();
+        handleFinish();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
 
     const t1 = setTimeout(() => {
       setPhase(1);
       playCelestialRevealChime();
-    }, 1400);
+    }, 900);
 
     const t2 = setTimeout(() => {
       setPhase(2);
       playMilestoneSlideTick();
-    }, 3000);
+    }, 2200);
 
     const t3 = setTimeout(() => {
       setPhase(3);
-    }, 4600);
-
-    const tComplete = setTimeout(() => {
-      handleFinish();
-    }, 5900);
+    }, 3600);
 
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
-      clearTimeout(tComplete);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
-  // 2. High-Performance Canvas Celestial Cosmos Animation
+  // 2. Luminous Stardust & Celestial Starfield Canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -75,150 +70,52 @@ export default function CinematicIntro({ onComplete }) {
     };
     window.addEventListener('resize', handleResize);
 
-    // Mouse coordinates with smooth damping
-    let mouseX = width / 2;
-    let mouseY = height / 2;
-    let targetMouseX = mouseX;
-    let targetMouseY = mouseY;
-
-    const handleMouseMove = (e) => {
-      targetMouseX = e.clientX;
-      targetMouseY = e.clientY;
-    };
-    window.addEventListener('pointermove', handleMouseMove);
-
-    // 60 Luminous Stardust & Ember Particles
-    const PARTICLE_COUNT = 65;
-    const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+    const isMobile = window.innerWidth < 768;
+    const count = isMobile ? 30 : 60;
+    const stars = Array.from({ length: count }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      baseRadius: Math.random() * 2.2 + 0.8,
-      speedX: (Math.random() - 0.5) * 0.45,
-      speedY: -Math.random() * 0.55 - 0.25,
-      seed: Math.random() * 100,
-      pulseSpeed: Math.random() * 0.03 + 0.015,
-      color: Math.random() > 0.35 ? '#FDEBB2' : '#F7D6DC',
-      depth: Math.random() * 0.8 + 0.2
+      size: Math.random() * 2 + 0.8,
+      speedX: (Math.random() - 0.5) * 0.3,
+      speedY: -Math.random() * 0.4 - 0.2,
+      opacity: Math.random() * 0.7 + 0.3,
+      pulse: Math.random() * Math.PI,
+      isGold: Math.random() > 0.4
     }));
 
-    let startTime = performance.now();
-
-    const render = (currentTime) => {
-      const elapsed = (currentTime - startTime) * 0.001;
-
-      // Smooth mouse lerp
-      mouseX += (targetMouseX - mouseX) * 0.05;
-      mouseY += (targetMouseY - mouseY) * 0.05;
-      const mouseOffsetX = (mouseX - width / 2) * 0.03;
-      const mouseOffsetY = (mouseY - height / 2) * 0.03;
-
+    let time = 0;
+    const render = () => {
+      time += 0.02;
       ctx.clearRect(0, 0, width, height);
 
-      const centerX = width * 0.5 + mouseOffsetX;
-      const centerY = height * 0.42 + mouseOffsetY;
+      // Draw subtle celestial rays from center
+      const cx = width / 2;
+      const cy = height * 0.45;
+      const radGrad = ctx.createRadialGradient(cx, cy, 30, cx, cy, Math.max(width, height) * 0.6);
+      radGrad.addColorStop(0, 'rgba(229, 185, 87, 0.09)');
+      radGrad.addColorStop(0.35, 'rgba(110, 18, 46, 0.06)');
+      radGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = radGrad;
+      ctx.fillRect(0, 0, width, height);
 
-      // Layer 1: Atmospheric Volumetric God-Rays (Soft Rotating Beams)
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(elapsed * 0.04);
-
-      const beamCount = 6;
-      for (let i = 0; i < beamCount; i++) {
-        const angle = (i * Math.PI * 2) / beamCount;
-        ctx.save();
-        ctx.rotate(angle);
-
-        const beamGradient = ctx.createRadialGradient(0, 0, 50, 0, 0, Math.max(width, height) * 0.65);
-        beamGradient.addColorStop(0, 'rgba(212, 175, 55, 0.08)');
-        beamGradient.addColorStop(0.35, 'rgba(168, 32, 61, 0.04)');
-        beamGradient.addColorStop(1, 'transparent');
-
-        ctx.fillStyle = beamGradient;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(-70, Math.max(width, height) * 0.7);
-        ctx.lineTo(70, Math.max(width, height) * 0.7);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-      }
-      ctx.restore();
-
-      // Layer 2: Concentric Astrolabe Celestial Hairline Rings
-      ctx.save();
-      ctx.translate(centerX, centerY);
-
-      // Inner Gilded Astrolabe Ring
-      ctx.save();
-      ctx.rotate(-elapsed * 0.03);
-      ctx.beginPath();
-      const ringRadius = Math.min(width, height) * 0.34;
-      ctx.arc(0, 0, ringRadius, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(212, 175, 55, 0.12)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 14]);
-      ctx.stroke();
-
-      // Cardinal Diamond Ticks on Ring
-      for (let j = 0; j < 8; j++) {
-        const tickAngle = (j * Math.PI * 2) / 8;
-        const tx = Math.cos(tickAngle) * ringRadius;
-        const ty = Math.sin(tickAngle) * ringRadius;
-        ctx.fillStyle = 'rgba(253, 235, 178, 0.3)';
-        ctx.fillRect(tx - 2, ty - 2, 4, 4);
-      }
-      ctx.restore();
-
-      // Outer Fine Celestial Ring
-      ctx.save();
-      ctx.rotate(elapsed * 0.015);
-      ctx.beginPath();
-      const outerRingRadius = Math.min(width, height) * 0.46;
-      ctx.arc(0, 0, outerRingRadius, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(212, 175, 55, 0.07)';
-      ctx.lineWidth = 0.8;
-      ctx.setLineDash([8, 24]);
-      ctx.stroke();
-      ctx.restore();
-
-      ctx.restore();
-
-      // Layer 3: Organic Floating Stardust & Embers
-      particles.forEach((p) => {
-        // Organic Brownian undulation
-        p.x += p.speedX + Math.sin(elapsed + p.seed) * 0.25;
-        p.y += p.speedY;
-
-        // Wrap around screen edges
-        if (p.y < -20) {
-          p.y = height + 10;
-          p.x = Math.random() * width;
+      // Draw particles
+      stars.forEach((s) => {
+        s.y += s.speedY;
+        s.x += s.speedX + Math.sin(time + s.size) * 0.2;
+        if (s.y < -10) {
+          s.y = height + 10;
+          s.x = Math.random() * width;
         }
-        if (p.x < -20) p.x = width + 10;
-        if (p.x > width + 20) p.x = -10;
+        if (s.x < -10) s.x = width + 10;
+        if (s.x > width + 10) s.x = -10;
 
-        const pulse = 0.5 + 0.5 * Math.sin(elapsed * 2.5 + p.seed);
-        const currentAlpha = (0.2 + 0.65 * pulse) * p.depth;
-        const currentRadius = p.baseRadius * (0.85 + 0.25 * pulse);
+        const currentAlpha = s.opacity * (0.6 + 0.4 * Math.sin(time * 2 + s.pulse));
+        ctx.fillStyle = s.isGold
+          ? `rgba(252, 231, 162, ${currentAlpha})`
+          : `rgba(243, 194, 178, ${currentAlpha})`;
 
-        // Draw particle with soft glowing halo
-        const pX = p.x + mouseOffsetX * p.depth;
-        const pY = p.y + mouseOffsetY * p.depth;
-
-        const glow = ctx.createRadialGradient(pX, pY, 0, pX, pY, currentRadius * 3.5);
-        glow.addColorStop(0, p.color === '#FDEBB2' ? `rgba(255, 235, 178, ${currentAlpha})` : `rgba(247, 214, 220, ${currentAlpha})`);
-        glow.addColorStop(0.4, p.color === '#FDEBB2' ? `rgba(212, 175, 55, ${currentAlpha * 0.5})` : `rgba(168, 32, 61, ${currentAlpha * 0.4})`);
-        glow.addColorStop(1, 'transparent');
-
-        ctx.fillStyle = glow;
         ctx.beginPath();
-        ctx.arc(pX, pY, currentRadius * 3.5, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Solid core
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(pX, pY, currentRadius * 0.8, 0, Math.PI * 2);
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
         ctx.fill();
       });
 
@@ -230,7 +127,6 @@ export default function CinematicIntro({ onComplete }) {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('pointermove', handleMouseMove);
     };
   }, []);
 
@@ -247,192 +143,208 @@ export default function CinematicIntro({ onComplete }) {
     handleFinish();
   };
 
-  const handleStageInteraction = () => {
+  const toggleSound = (e) => {
+    e.stopPropagation();
     initGlobalAudioUnlock();
     playCinematicSwell();
-    setAudioPromptVisible(false);
-    playMicroTap();
+    setIsAudioActive(true);
   };
 
   return (
     <motion.div
-      className="cinematic-intro-stage"
+      className="intro-editorial-curtain"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.025, transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] } }}
-      onClick={handleStageInteraction}
+      exit={{ opacity: 0, scale: 1.03, transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] } }}
       role="dialog"
       aria-modal="true"
       aria-label="Welcome to TEJAS '26 Opening Experience"
     >
-      {/* 1. Dynamic Interactive Cosmos & Volumetric Light Canvas */}
-      <canvas ref={canvasRef} className="intro-cosmos-canvas" aria-hidden="true" />
-      <div className="intro-ambient-illumination" aria-hidden="true" />
-      <div className="intro-vignette-overlay" aria-hidden="true" />
+      {/* 1. Deep Space Astrolabe & Stardust Canvas */}
+      <canvas ref={canvasRef} className="intro-starfield-canvas" aria-hidden="true" />
+      <div className="intro-astrolabe-ambient" aria-hidden="true" />
+      <div className="intro-vignette-mask" aria-hidden="true" />
 
-      {/* 2. Top HUD Bar: Discreet Audio Prompt & Minimalist Skip Button */}
-      <div className="intro-hud-bar">
-        {audioPromptVisible && (
-          <div
-            className="intro-sound-prompt"
-            onClick={handleStageInteraction}
-            title="Click to play full cinematic audio"
-          >
-            <Volume2 size={12} className="sound-pulse-icon" />
-            <span>Click for cinematic sound</span>
-          </div>
-        )}
+      {/* 2. Top HUD Bar: High Contrast Glassmorphic Navigation */}
+      <header className="intro-control-hud">
+        <button
+          type="button"
+          className={`intro-hud-btn sound-toggle ${isAudioActive ? 'active' : ''}`}
+          onClick={toggleSound}
+          aria-label={isAudioActive ? 'Sound is enabled' : 'Click to enable audio'}
+        >
+          {isAudioActive ? <Volume2 size={14} className="hud-icon" /> : <VolumeX size={14} className="hud-icon" />}
+          <span>{isAudioActive ? 'AUDIO ENGAGED' : 'ENABLE SOUND'}</span>
+        </button>
 
         <button
-          className="intro-skip-pill"
+          type="button"
+          className="intro-hud-btn skip-pill"
           onClick={handleSkip}
-          onMouseEnter={() => playMicroTap()}
-          autoFocus
-          aria-label="Skip to main invitation"
+          aria-label="Skip introductory sequence"
         >
-          <span>Skip Intro</span>
-          <ArrowRight size={14} className="skip-arrow" />
+          <span>Skip to Invitation</span>
+          <kbd className="hud-kbd">[ESC]</kbd>
+          <ArrowRight size={13} className="hud-arrow" />
         </button>
-      </div>
+      </header>
 
-      {/* 3. Fluid Convergence Ribbons Framing the Stage (Swooping Above and Below Typography) */}
-      <div className="intro-ribbon-canvas" aria-hidden="true">
-        <svg viewBox="0 0 1000 600" fill="none" className="intro-ribbon-svg" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="goldRibbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FFF2CC" stopOpacity="0.95" />
-              <stop offset="50%" stopColor="#D4AF37" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#9E7418" stopOpacity="0.1" />
-            </linearGradient>
-
-            <linearGradient id="roseRibbonGrad" x1="100%" y1="100%" x2="0%" y2="0%">
-              <stop offset="0%" stopColor="#F7D6DC" stopOpacity="0.95" />
-              <stop offset="50%" stopColor="#A8203D" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#380716" stopOpacity="0.1" />
-            </linearGradient>
-
-            <filter id="ribbonSpecularGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="5" result="glow" />
-              <feMerge>
-                <feMergeNode in="glow" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          {/* Golden Ribbon Swooping Above Typography */}
-          <motion.path
-            d="M -60,110 C 260,30 420,175 500,180 C 580,185 750,480 1060,380"
-            stroke="url(#goldRibbonGrad)"
-            strokeWidth="3.2"
-            strokeLinecap="round"
-            filter="url(#ribbonSpecularGlow)"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.95 }}
-            transition={{ duration: 2.2, ease: [0.16, 1, 0.3, 1] }}
-          />
-
-          {/* Velvet Rose Ribbon Swooping Below Tagline */}
-          <motion.path
-            d="M -60,510 C 300,580 420,430 500,425 C 580,420 760,60 1060,190"
-            stroke="url(#roseRibbonGrad)"
-            strokeWidth="3.2"
-            strokeLinecap="round"
-            filter="url(#ribbonSpecularGlow)"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.95 }}
-            transition={{ duration: 2.2, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          />
-        </svg>
-      </div>
-
-      {/* 4. Centerpiece Kinetic Stage */}
-      <div className="intro-center-content">
-        {/* Bespoke Editorial Hallmark Monogram */}
+      {/* 3. Centerpiece Editorial Stage */}
+      <main className="intro-stage-monument">
+        {/* Academic Prestige Hallmark Overline */}
         <motion.div
-          className="intro-hallmark-crest"
-          initial={{ opacity: 0, scale: 0.85, y: -10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+          className="intro-monogram-crest"
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="crest-hairline left" />
-          <div className="crest-insignia">
-            <span className="crest-year">MMXXVI</span>
-            <span className="crest-divider">◆</span>
-            <span className="crest-batch">MCA BATCH</span>
+          <span className="crest-rail left" />
+          <div className="crest-content">
+            <span className="crest-roman">MMXXVI</span>
+            <span className="crest-diamond">✦</span>
+            <span className="crest-cohort">MCA SENIOR WELCOME</span>
+            <span className="crest-diamond">✦</span>
+            <span className="crest-city">BHUBANESWAR</span>
           </div>
-          <div className="crest-hairline right" />
+          <span className="crest-rail right" />
         </motion.div>
 
-        {/* Institution & Department Eyebrow */}
+        {/* Institution Eyebrow */}
         <motion.div
-          className="intro-institution-eyebrow"
-          initial={{ opacity: 0, y: 10 }}
+          className="intro-department-eyebrow"
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.25 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
           <span>DEPARTMENT OF COMPUTER APPLICATIONS</span>
-          <span className="eyebrow-sep">·</span>
+          <span className="eyebrow-dot">·</span>
           <span>SRUSTI ACADEMY OF MANAGEMENT &amp; TECHNOLOGY</span>
         </motion.div>
 
-        {/* Master Display Title TEJAS '26 with Kinetic Entrance */}
-        <motion.div className="intro-title-wrapper">
+        {/* The Master Monumental Title: TEJAS '26 */}
+        <motion.div className="intro-monument-title-box">
           <motion.h1
-            className="intro-cinematic-title"
-            initial={{ opacity: 0, y: 32, scale: 0.96, letterSpacing: "0.14em" }}
-            animate={phase >= 1 ? { opacity: 1, y: 0, scale: 1, letterSpacing: "0.06em" } : { opacity: 0, y: 32, scale: 0.96 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="intro-hero-letters"
+            initial={{ opacity: 0, y: 40, letterSpacing: '0.18em' }}
+            animate={phase >= 1 ? { opacity: 1, y: 0, letterSpacing: '0.08em' } : {}}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            TEJAS <span className="title-year-accent">’26</span>
+            <span className="letter-word">TEJAS</span>
+            <span className="letter-year">’26</span>
           </motion.h1>
-          <div className={`title-light-sweep ${phase >= 1 ? 'is-sweeping' : ''}`} aria-hidden="true" />
+          <div className={`intro-shimmer-sweep ${phase >= 1 ? 'sweeping' : ''}`} aria-hidden="true" />
         </motion.div>
 
-        {/* Pure Welcoming Tagline (Removed redundant "Senior Welcoming Gala") */}
-        <motion.p
-          className="intro-thematic-tagline"
-          initial={{ opacity: 0, y: 14 }}
-          animate={phase >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
-          transition={{ duration: 0.85, delay: 0.25 }}
-        >
-          The Fresh Bloom
-        </motion.p>
-
-        {/* Dual Milestone Timeline Showcase */}
+        {/* The Sacred Lotus / Botanical Bloom Emblem Centerpiece */}
         <motion.div
-          className="intro-milestones-timeline"
-          initial={{ opacity: 0, y: 16 }}
-          animate={phase >= 2 ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="intro-bloom-centerpiece"
+          initial={{ opacity: 0, scale: 0.88 }}
+          animate={phase >= 1 ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 1.0, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="intro-milestone-entry">
-            <span className="milestone-badge-date">27 OCT</span>
-            <div className="milestone-text-block">
-              <strong className="milestone-name">Theme &amp; Banner Reveal</strong>
-              <span className="milestone-sub">Prelude Kickoff</span>
-            </div>
+          {/* Animated SVG Sacred Lotus / Fresh Bloom Geometry */}
+          <div className="bloom-mandala-graphic" aria-hidden="true">
+            <svg viewBox="0 0 240 70" fill="none" className="bloom-svg">
+              {/* Flanking Gilded Filigree Lines */}
+              <line x1="10" y1="35" x2="80" y2="35" stroke="url(#introGoldGrad)" strokeWidth="1" strokeDasharray="3 4" opacity="0.6" />
+              <line x1="160" y1="35" x2="230" y2="35" stroke="url(#introGoldGrad)" strokeWidth="1" strokeDasharray="3 4" opacity="0.6" />
+              <circle cx="10" cy="35" r="2" fill="#E5B957" />
+              <circle cx="230" cy="35" r="2" fill="#E5B957" />
+
+              <defs>
+                <linearGradient id="introGoldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#C89B38" stopOpacity="0.2" />
+                  <stop offset="50%" stopColor="#FCE7A2" stopOpacity="0.9" />
+                  <stop offset="100%" stopColor="#C89B38" stopOpacity="0.2" />
+                </linearGradient>
+                <linearGradient id="petalPeachGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#FCE7A2" />
+                  <stop offset="50%" stopColor="#F3C2B2" />
+                  <stop offset="100%" stopColor="#6E122E" />
+                </linearGradient>
+              </defs>
+
+              {/* Center Lotus Petals */}
+              <motion.path
+                d="M 120 12 C 108 24 106 42 120 54 C 134 42 132 24 120 12 Z"
+                fill="url(#petalPeachGrad)"
+                opacity="0.9"
+                initial={{ pathLength: 0, scale: 0.7 }}
+                animate={phase >= 1 ? { pathLength: 1, scale: 1 } : {}}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              />
+              <path d="M 104 22 C 96 32 102 46 120 52 C 114 38 108 28 104 22 Z" fill="#E5B957" opacity="0.75" />
+              <path d="M 136 22 C 144 32 138 46 120 52 C 126 38 132 28 136 22 Z" fill="#E5B957" opacity="0.75" />
+              <circle cx="120" cy="52" r="3" fill="#FCE7A2" />
+            </svg>
           </div>
 
-          <div className="milestone-node-connector" aria-hidden="true">
-            <span className="connector-line" />
-            <span className="connector-dot">◆</span>
-            <span className="connector-line" />
+          <p className="intro-tagline-text">
+            The Fresh Bloom
+          </p>
+
+          <p className="intro-sub-quote">
+            “A welcoming confluence of talent, leadership &amp; lifelong camaraderie”
+          </p>
+        </motion.div>
+
+        {/* Dual Milestone Pillar Gateways */}
+        <motion.div
+          className="intro-gateway-pillars"
+          initial={{ opacity: 0, y: 24 }}
+          animate={phase >= 2 ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {/* Prelude Milestone */}
+          <div className="gateway-card prelude">
+            <div className="card-top-tag">
+              <span className="tag-chapter">CHAPTER I · PRELUDE</span>
+            </div>
+            <div className="card-date-badge">27 OCT 2026</div>
+            <strong className="card-title">Theme &amp; Banner Reveal</strong>
+            <span className="card-venue">Department Campus · 11:00 AM</span>
           </div>
 
-          <div className="intro-milestone-entry highlight">
-            <span className="milestone-badge-date primary">30 OCT</span>
-            <div className="milestone-text-block">
-              <strong className="milestone-name">Freshers Day Gala</strong>
-              <span className="milestone-sub">JRD Tata Hall · 10:00 AM</span>
+          <div className="gateway-confluence-nexus" aria-hidden="true">
+            <span className="nexus-line" />
+            <div className="nexus-gem">✦</div>
+            <span className="nexus-line" />
+          </div>
+
+          {/* Grand Gala Milestone */}
+          <div className="gateway-card gala highlight">
+            <div className="card-top-tag">
+              <span className="tag-chapter gold">CHAPTER II · GRAND GALA</span>
             </div>
+            <div className="card-date-badge gold">30 OCT 2026</div>
+            <strong className="card-title">Freshers Day Gala</strong>
+            <span className="card-venue">JRD Tata Hall · 10:00 AM</span>
           </div>
         </motion.div>
-      </div>
 
-      {/* 5. Bottom Architectural Credential */}
-      <footer className="intro-stage-footnote">
-        <span>Senior Welcome for Incoming MCA Batch (2026–2028) · Bhubaneswar</span>
+        {/* Main Enter Action Button */}
+        <motion.div
+          className="intro-portal-action"
+          initial={{ opacity: 0, y: 20 }}
+          animate={phase >= 2 ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.3 }}
+        >
+          <button
+            type="button"
+            className="intro-enter-btn"
+            onClick={handleFinish}
+            onMouseEnter={() => playMicroTap()}
+          >
+            <span className="btn-glow-aura" />
+            <span className="btn-label">UNVEIL CEREMONIAL INVITATION</span>
+            <ChevronDown size={16} className="btn-chevron" />
+          </button>
+        </motion.div>
+      </main>
+
+      {/* Bottom Footer Notice */}
+      <footer className="intro-bottom-notice">
+        <span>Srusti Academy of Management &amp; Technology · Welcoming Incoming MCA Batch 2026–2028</span>
       </footer>
     </motion.div>
   );

@@ -8,49 +8,65 @@ import { playMicroTap } from '../utils/audio';
 
 const GALLERY_STORIES = [
   {
+    id: 'bloom',
+    type: 'image',
+    src: '/tejas-bloom-editorial.jpg',
+    badge: 'BOTANICAL HERITAGE · THE FRESH BLOOM',
+    title: 'The Fresh Bloom Emblem',
+    quote: '“A flower does not think of competing with the flower next to it. It just blooms.”',
+    desc: 'Handcrafted botanical woodcut centerpiece celebrating the spirit of renewal, fresh camaraderie, and radiant intellectual growth welcoming the incoming MCA batch.',
+    tags: ['Botanical Emblem', 'Rose Filigree', 'The Fresh Bloom']
+  },
+  {
     id: 'video',
     type: 'video',
     src: '/crowd-cheering.mp4',
-    poster: '/freshers-editorial.png',
+    poster: '/tejas-bloom-editorial.jpg',
     badge: 'GRAND FINALE · DJ ARENA',
-    eyebrow: 'ACT III · CELEBRATION CLIMAX',
     title: 'The Celebration Floor',
     quote: '“When the formalities end, the celebration takes over.”',
-    desc: 'When the formal proceedings conclude, the auditorium transforms into an electric arena. Pumping bass, dynamic laser illuminations, and collective euphoria celebrating your official induction into the MCA family.',
-    tags: ['Live Student DJ', 'Laser Illuminations', 'Open Dance Arena']
+    desc: 'Dynamic club beats, pulsating laser illuminations, and collective euphoria celebrating your official induction into the MCA family.',
+    tags: ['Live Student DJ', 'Dance Floor Arena', 'Laser Light Show']
   },
   {
-    id: 'fellowship',
+    id: 'campus',
     type: 'image',
-    src: '/freshers-editorial.png',
-    badge: 'CAMPUS COMMUNITY',
-    eyebrow: 'FELLOWSHIP & LIFELONG BONDS',
-    title: 'The Fresh Bloom Cohort',
-    quote: '“People who become teammates, hackathon partners, and friends for life.”',
-    desc: 'More than lectures and algorithms — the MCA journey is defined by the peers standing beside you. Future hackathon teammates, research partners, and lifelong confidants connecting on day one.',
-    tags: ['Batch 2026–2028', 'Senior Mentorship', 'Academic Camaraderie']
+    src: '/tejas-campus-editorial.jpg',
+    badge: 'CAMPUS SANCTUARY · SRUSTI ACADEMY',
+    title: 'The Campus Sanctuary',
+    quote: '“A sanctuary of learning, creative curiosity, and lasting mentorship.”',
+    desc: 'The architectural entrance of Srusti Academy framed in classical botanical filigree, where students gather across lecture halls, collaborative hubs, and serene courtyards.',
+    tags: ['Patia Campus', 'JRD Tata Hall', 'Academic Life']
   },
   {
     id: 'culture',
     type: 'image',
-    src: '/odissi-dance.jpg',
-    badge: 'SACRED TRADITION',
-    eyebrow: 'INAUGURAL BENEDICTION',
-    title: 'Odissi & Cultural Heritage',
-    quote: '“Inaugural lamp lighting & classical Odissi invocations welcoming the freshers.”',
-    desc: 'Steeped in timeless Odia artistic heritage, the celebration begins with auspicious Mangalacharan lamp lighting and a spellbinding Odissi recital invoking divine wisdom for the academic chapter ahead.',
-    tags: ['Classical Mangalacharan', 'Traditional Brass Diyas', 'Cultural Benediction']
+    src: '/tejas-culture-editorial.jpg',
+    badge: 'SACRED TRADITION · INVOCATION',
+    title: 'Odissi Heritage & Sacred Benediction',
+    quote: '“Classical grace and auspicious beginnings rooted in Odia heritage.”',
+    desc: 'Steeped in timeless Odia artistic heritage, the Freshers Day opens with traditional Mangalacharan brass lamp lighting and classical Odissi recital invoking divine wisdom.',
+    tags: ['Classical Mangalacharan', 'Brass Diyas', 'Cultural Benediction']
   },
   {
     id: 'tech',
     type: 'image',
     src: '/mca-builders.jpg',
-    badge: 'INNOVATION & CODE',
-    eyebrow: 'DEPARTMENT OF COMPUTER APPLICATIONS',
+    badge: 'INNOVATION & CODE · MCA CRAFT',
     title: 'Builders of Tomorrow',
     quote: '“A fraternity of problem solvers, creative minds, and future tech leaders.”',
     desc: 'Where analytical discipline meets creative engineering. Collaborative computer labs, algorithmic brainstorming, and cutting-edge software craft preparing curious minds to lead India’s tech future.',
-    tags: ['Collaborative Labs', 'Software Architects', 'Creative Engineering']
+    tags: ['Software Architects', 'Creative Engineering', 'Future Leaders']
+  },
+  {
+    id: 'fellowship',
+    type: 'image',
+    src: '/freshers-editorial.png',
+    badge: 'FELLOWSHIP · LIFELONG BONDS',
+    title: 'The Senior-Junior Confluence',
+    quote: '“People who become teammates, hackathon partners, and friends for life.”',
+    desc: 'More than classrooms and lectures — the MCA journey is defined by the peers standing beside you. Future hackathon teammates, research partners, and lifelong confidants connecting on day one.',
+    tags: ['Batch 2026–2028', 'Senior Mentorship', 'Academic Camaraderie']
   }
 ];
 
@@ -82,26 +98,26 @@ export default function VisualGallery() {
   };
 
   return (
-    <section className="visual-gallery-section" id="gallery" aria-label="Campus Spirit and Culture Gallery">
+    <section className="visual-gallery-section" id="gallery" aria-label="Visual Gallery: A Glimpse of What Awaits">
       <div className="section-container">
         {/* Curated Editorial Header */}
         <div className="gallery-master-header">
           <div className="gallery-eyebrow-pill">
-            <span className="pill-dot">◆</span>
-            <span>CAMPUS SPIRIT &amp; CULTURE</span>
-            <span className="pill-dot">◆</span>
+            <span className="pill-dot">✦</span>
+            <span>VISUAL INTELLIGENCE · THE FRESH BLOOM</span>
+            <span className="pill-dot">✦</span>
           </div>
 
           <h2 className="gallery-master-title">
-            The Spirit of TEJAS
+            A Glimpse of What Awaits
           </h2>
 
           <p className="gallery-master-description">
-            A celebration of new beginnings, student camaraderie, timeless stagecraft, and the vibrant intellectual life of the MCA family at Srusti Academy.
+            An artistic editorial preview capturing the spirit of renewal, classical stagecraft, fellowship, and celebration welcoming Batch 2026–2028 into the MCA family.
           </p>
         </div>
 
-        {/* 2x2 Art-Directed Curated Grid */}
+        {/* 3-Column Art-Directed Curated Grid */}
         <div className="gallery-curated-grid">
           {GALLERY_STORIES.map((item) => {
             const isVideo = item.type === 'video';
@@ -161,34 +177,26 @@ export default function VisualGallery() {
                   </div>
                 </div>
 
-                {/* Content Area */}
+                {/* Card Editorial Caption Block */}
                 <div className="gallery-card-content">
-                  <span className="gallery-card-eyebrow">{item.eyebrow}</span>
-                  <h3 className="gallery-card-heading">{item.title}</h3>
+                  <h3 className="gallery-card-title">
+                    {item.title}
+                  </h3>
 
-                  <blockquote className="gallery-card-quote">
+                  <p className="gallery-card-quote">
                     {item.quote}
-                  </blockquote>
+                  </p>
 
-                  <p className="gallery-card-text">
+                  <p className="gallery-card-desc">
                     {item.desc}
                   </p>
 
-                  {/* Curated Highlight Tags */}
                   <div className="gallery-tags-row">
                     {item.tags.map((tag, tIdx) => (
                       <span key={tIdx} className="gallery-tag-pill">
-                        <span className="tag-gem">✦</span>
-                        <span>{tag}</span>
+                        {tag}
                       </span>
                     ))}
-                  </div>
-
-                  <div className="gallery-card-footer">
-                    <span className="view-story-link">
-                      <span>View full visual story</span>
-                      <ChevronRight size={13} className="story-arrow" />
-                    </span>
                   </div>
                 </div>
               </article>
@@ -197,7 +205,7 @@ export default function VisualGallery() {
         </div>
       </div>
 
-      {/* Lightbox Modal */}
+      {/* Interactive Lightbox Modal */}
       {lightboxItem && (
         <div
           className="gallery-lightbox-backdrop"
@@ -206,47 +214,47 @@ export default function VisualGallery() {
           aria-modal="true"
           aria-label={lightboxItem.title}
         >
-          <div
-            className="gallery-lightbox-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="lightbox-container" onClick={(e) => e.stopPropagation()}>
             <button
               className="lightbox-close-btn"
               onClick={closeLightbox}
-              aria-label="Close modal"
+              aria-label="Close modal viewer"
             >
-              <X size={18} />
+              <X size={20} />
             </button>
 
-            <div className="lightbox-media-box">
+            <div className="lightbox-media-col">
               {lightboxItem.type === 'video' ? (
                 <video
                   src={lightboxItem.src}
                   controls
                   autoPlay
-                  className="lightbox-media-asset"
+                  playsInline
+                  className="lightbox-media-element"
                 />
               ) : (
                 <img
                   src={lightboxItem.src}
                   alt={lightboxItem.title}
-                  className="lightbox-media-asset"
+                  className="lightbox-media-element"
                 />
               )}
             </div>
 
-            <div className="lightbox-details-box">
-              <span className="lightbox-badge">{lightboxItem.badge}</span>
+            <div className="lightbox-info-col">
+              <span className="lightbox-badge-pill">{lightboxItem.badge}</span>
               <h3 className="lightbox-title">{lightboxItem.title}</h3>
               <p className="lightbox-quote">{lightboxItem.quote}</p>
-              <p className="lightbox-description">{lightboxItem.desc}</p>
-              <div className="lightbox-tags">
-                {lightboxItem.tags.map((tag, i) => (
-                  <span key={i} className="gallery-tag-pill">
-                    <span className="tag-gem">✦</span>
-                    <span>{tag}</span>
-                  </span>
+              <p className="lightbox-desc">{lightboxItem.desc}</p>
+
+              <div className="lightbox-tags-block">
+                {lightboxItem.tags.map((tag, idx) => (
+                  <span key={idx} className="lightbox-tag-pill">✦ {tag}</span>
                 ))}
+              </div>
+
+              <div className="lightbox-footer-note">
+                <span>DEPARTMENT OF MCA · TEJAS ’26 ARCHIVE</span>
               </div>
             </div>
           </div>
