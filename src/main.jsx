@@ -21,6 +21,7 @@ function App() {
     if (typeof window !== 'undefined') {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
       if (window.location.search.includes('nointro') || window.location.hash.includes('envelope')) return false;
+      if (window.location.search.includes('intro') || window.location.search.includes('reset')) return true;
       try {
         return !sessionStorage.getItem(INTRO_STORAGE_KEY);
       } catch (err) {
@@ -53,6 +54,7 @@ function App() {
 
   const handleCompleteIntro = () => {
     setShowIntro(false);
+    setIsLetterOpen(false);
     try {
       sessionStorage.setItem(INTRO_STORAGE_KEY, 'true');
     } catch (e) {}

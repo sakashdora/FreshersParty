@@ -1,4 +1,4 @@
-# TEJAS '26 — THE FRESH BLOOM
+6# TEJAS '26 — THE FRESH BLOOM
 ## V3 Decision Matrix (Second Pass — Explicit Trade-offs)
 **Date:** October 2026 | **Status:** Planning Phase Only | **No Code Modified**
 

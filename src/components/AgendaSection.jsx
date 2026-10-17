@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   Clock, Gamepad2, Music, Award, Users, Utensils,
   Flame, Mic2, Compass, CheckCircle2, ChevronDown,
-  Crown, CalendarPlus, Download, MapPin, Music2,
-  Calendar, Layers, Check, Sparkles
+  Crown, CalendarPlus, MapPin, Music2,
+  Calendar, Layers, Sparkles
 } from 'lucide-react';
 import { playMicroTap } from '../utils/audio';
 
@@ -241,23 +241,13 @@ const AGENDA_ITEMS = [
 
 export default function AgendaSection() {
   const [openSessionId, setOpenSessionId] = useState(2); // Default open to Inaugural Odissi
-  const [selectedAct, setSelectedAct] = useState('all');
-  const [copiedNotification, setCopiedNotification] = useState(false);
 
   const toggleAccordion = (id) => {
     playMicroTap();
     setOpenSessionId(openSessionId === id ? null : id);
   };
 
-  const handleActFilter = (actKey) => {
-    playMicroTap();
-    setSelectedAct(actKey);
-  };
-
-  const filteredItems = AGENDA_ITEMS.filter((item) => {
-    if (selectedAct === 'all') return true;
-    return item.act === selectedAct;
-  });
+  const filteredItems = AGENDA_ITEMS;
 
   const handleGoogleCalendar = () => {
     playMicroTap();
@@ -277,62 +267,6 @@ export default function AgendaSection() {
     const location = encodeURIComponent("JRD Tata Hall, Srusti Academy of Management & Technology, Bhubaneswar");
     const dates = "20261030T043000Z/20261030T113000Z";
     window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`, '_blank');
-  };
-
-  const handleDownloadIcs = () => {
-    playMicroTap();
-    const icsContent = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//Srusti Academy of Management//TEJAS 26 MCA Freshers//EN',
-      'CALSCALE:GREGORIAN',
-      'METHOD:PUBLISH',
-      'BEGIN:VEVENT',
-      'UID:tejas26-freshers-gala-oct30@srustiacademy.ac.in',
-      'SUMMARY:TEJAS \'26 — MCA Freshers Day Gala',
-      'DESCRIPTION:Official Freshers Day Celebration for MCA Batch 2026-2028. From inaugural Odissi dance to Mr. & Ms. Fresher Crowning and DJ dance floor.',
-      'LOCATION:JRD Tata Hall\\, Srusti Academy of Management & Technology\\, Bhubaneswar',
-      'DTSTART:20261030T043000Z',
-      'DTEND:20261030T113000Z',
-      'STATUS:CONFIRMED',
-      'TRANSP:OPAQUE',
-      'END:VEVENT',
-      'END:VCALENDAR'
-    ].join('\r\n');
-
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.setAttribute('download', 'TEJAS-26-Freshers-Day-Itinerary.ics');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleCopySchedule = () => {
-    playMicroTap();
-    const textSummary =
-      "TEJAS '26 — MCA Freshers Day Programme (30 Oct 2026 · JRD Tata Hall)\n\n" +
-      "10:00 AM – Arrival & Registration\n" +
-      "10:30 AM – Lamp Lighting & Odissi Dance [Tradition]\n" +
-      "10:45 AM – Welcome Speeches & Keynotes\n" +
-      "11:45 AM – Introduction of Freshers\n" +
-      "12:00 PM – Interactive Icebreakers & Games\n" +
-      "12:45 PM – Fellowship Grand Lunch [Feast]\n" +
-      "01:30 PM – Cultural Group Performances\n" +
-      "02:15 PM – Crowd Games & Fun Contests\n" +
-      "03:00 PM – Solo Singing & Instrumental\n" +
-      "03:15 PM – Final Games Showdown\n" +
-      "03:45 PM – Crowning of Mr. & Ms. Fresher '26 [Honours]\n" +
-      "04:00 PM – Valedictory & Vote of Thanks\n" +
-      "04:15 PM – Grand DJ Floor & Celebration [Finale]";
-
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(textSummary).then(() => {
-        setCopiedNotification(true);
-        setTimeout(() => setCopiedNotification(false), 2400);
-      });
-    }
   };
 
   return (
@@ -386,7 +320,7 @@ export default function AgendaSection() {
             </div>
           </div>
 
-          {/* Quick Calendar Export Utility Strip */}
+          {/* Quick Calendar Export Utility */}
           <div className="agenda-utility-toolbar">
             <button
               onClick={handleGoogleCalendar}
@@ -395,68 +329,6 @@ export default function AgendaSection() {
             >
               <CalendarPlus size={14} />
               <span>Add to Google Calendar</span>
-            </button>
-
-            <button
-              onClick={handleDownloadIcs}
-              className="agenda-tool-btn"
-              title="Download standard iCal / Outlook .ics calendar event"
-            >
-              <Download size={14} />
-              <span>Download iCal (.ics)</span>
-            </button>
-
-            <button
-              onClick={handleCopySchedule}
-              className="agenda-tool-btn"
-              title="Copy complete text schedule to clipboard"
-            >
-              {copiedNotification ? <Check size={14} className="copied-icon" /> : <Clock size={14} />}
-              <span>{copiedNotification ? 'Schedule Copied!' : 'Copy Summary'}</span>
-            </button>
-          </div>
-
-          {/* Act Navigation Filter Tabs */}
-          <div className="agenda-act-tabs" role="tablist" aria-label="Filter programme acts">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={selectedAct === 'all'}
-              className={`act-tab-btn ${selectedAct === 'all' ? 'is-active' : ''}`}
-              onClick={() => handleActFilter('all')}
-            >
-              <span>Complete Schedule</span>
-              <span className="tab-count-badge">13</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={selectedAct === 'act-1'}
-              className={`act-tab-btn ${selectedAct === 'act-1' ? 'is-active' : ''}`}
-              onClick={() => handleActFilter('act-1')}
-            >
-              <span>Act I · Overture</span>
-              <span className="tab-count-badge">3</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={selectedAct === 'act-2'}
-              className={`act-tab-btn ${selectedAct === 'act-2' ? 'is-active' : ''}`}
-              onClick={() => handleActFilter('act-2')}
-            >
-              <span>Act II · Spotlight &amp; Feast</span>
-              <span className="tab-count-badge">3</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={selectedAct === 'act-3'}
-              className={`act-tab-btn ${selectedAct === 'act-3' ? 'is-active' : ''}`}
-              onClick={() => handleActFilter('act-3')}
-            >
-              <span>Act III · Revelry &amp; Finale</span>
-              <span className="tab-count-badge">7</span>
             </button>
           </div>
         </div>

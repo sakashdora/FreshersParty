@@ -387,9 +387,111 @@ export function playSkipTransition() {
 }
 
 // ----------------------------------------------------------------------------
-// 8. STOP ALL INTRO AUDIO (Skip / Exit)
+// 8. MASTER INTRO SOUNDTRACK (Kalki 2898 AD Bujji Theme - 14.01s)
+// ----------------------------------------------------------------------------
+let masterIntroAudio = null;
+
+export function getMasterIntroAudio() {
+  if (typeof window === 'undefined') return null;
+  if (!masterIntroAudio) {
+    masterIntroAudio = getAudio('/audio/intro_sound.mp3');
+  }
+  return masterIntroAudio;
+}
+
+export function playMasterSoundtrack({ onTimeUpdate, onEnded, onError } = {}) {
+  const audio = getMasterIntroAudio();
+  if (!audio) return null;
+
+  try {
+    audio.currentTime = 0;
+    audio.volume = isAudioMuted ? 0 : 0.95;
+
+    let timeListener = null;
+    let endListener = null;
+
+    if (onTimeUpdate) {
+      timeListener = () => {
+        onTimeUpdate(audio.currentTime);
+      };
+      audio.addEventListener('timeupdate', timeListener);
+    }
+
+    if (onEnded) {
+      endListener = () => {
+        onEnded();
+      };
+      audio.addEventListener('ended', endListener);
+    }
+
+    const promise = audio.play();
+    if (promise !== undefined) {
+      promise.catch((err) => {
+        console.warn('Audio play restricted or blocked:', err);
+        if (onError) onError(err);
+      });
+    }
+
+    return () => {
+      if (timeListener) audio.removeEventListener('timeupdate', timeListener);
+      if (endListener) audio.removeEventListener('ended', endListener);
+    };
+  } catch (e) {
+    console.warn('Master soundtrack playback error:', e);
+    if (onError) onError(e);
+    return null;
+  }
+}
+
+export function setMasterSoundtrackVolume(vol) {
+  if (masterIntroAudio) {
+    try {
+      masterIntroAudio.volume = isAudioMuted ? 0 : Math.max(0, Math.min(1, vol));
+    } catch (e) {}
+  }
+}
+
+export function stopMasterSoundtrack(fadeOutMs = 500) {
+  if (!masterIntroAudio) return;
+  try {
+    if (fadeOutMs > 0 && masterIntroAudio.volume > 0.05 && !masterIntroAudio.paused) {
+      const startVol = masterIntroAudio.volume;
+      const startTime = performance.now();
+      const fadeInterval = setInterval(() => {
+        const elapsed = performance.now() - startTime;
+        const progress = Math.min(1, elapsed / fadeOutMs);
+        if (masterIntroAudio) {
+          masterIntroAudio.volume = Math.max(0, startVol * (1 - progress));
+        }
+        if (progress >= 1) {
+          clearInterval(fadeInterval);
+          if (masterIntroAudio) {
+            masterIntroAudio.pause();
+            masterIntroAudio.currentTime = 0;
+            masterIntroAudio.volume = isAudioMuted ? 0 : 0.95;
+          }
+        }
+      }, 30);
+    } else {
+      masterIntroAudio.pause();
+      masterIntroAudio.currentTime = 0;
+    }
+  } catch (e) {}
+}
+
+export function toggleMasterSoundtrackMute() {
+  isAudioMuted = !isAudioMuted;
+  if (masterIntroAudio) {
+    masterIntroAudio.volume = isAudioMuted ? 0 : 0.95;
+  }
+  return isAudioMuted;
+}
+
+// ----------------------------------------------------------------------------
+// 9. STOP ALL INTRO AUDIO (Skip / Exit)
 // ----------------------------------------------------------------------------
 export function stopIntroAudio() {
+  stopMasterSoundtrack(300);
   if (introSwellAudio) {
     try {
       introSwellAudio.pause();
@@ -403,3 +505,4 @@ export function stopIntroAudio() {
     } catch (e) {}
   }
 }
+
