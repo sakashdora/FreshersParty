@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { AnimatePresence } from 'motion/react';
-import { RotateCcw, Calendar, MapPin, Sparkles } from 'lucide-react';
+import { 
+  RotateCcw, Calendar, MapPin, Sparkles,
+  Users, Sprout, Star, Infinity, Mail, ChevronRight, ChevronDown, Menu, X 
+} from 'lucide-react';
 import './styles.css';
 import './styles-v3.css';
 
@@ -36,6 +39,7 @@ function App() {
   });
   const [isStickyNavVisible, setIsStickyNavVisible] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     initGlobalAudioUnlock();
@@ -126,6 +130,48 @@ function App() {
 
       {/* 2. Master Grand Hero & Invitation Stage */}
       <header className="main-hero-composition" role="banner">
+        {/* Top bar with Academic Badge & Hamburger Menu */}
+        <div className="hero-top-bar">
+          <div className="hero-top-spacer" aria-hidden="true" />
+          <div className="hero-eyebrow-badge">
+            <span className="eyebrow-dot">✦</span>
+            <span>DEPARTMENT OF COMPUTER APPLICATIONS</span>
+            <span className="eyebrow-dot">✦</span>
+            <span>SRUSTI ACADEMY</span>
+            <span className="eyebrow-dot">✦</span>
+          </div>
+          <button
+            type="button"
+            className="hero-menu-toggle-btn"
+            onClick={() => setMobileMenuOpen(prev => !prev)}
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {/* Slide-down Menu Drawer */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <div className="hero-menu-drawer" role="menu">
+              <a href="#invitation-envelope" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Invitation</a>
+              <a href="#milestones" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Milestones</a>
+              <a href="#agenda-flow" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Programme</a>
+              <a href="#gallery" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Gallery</a>
+              <a href="#celebration-cheers" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Cheers</a>
+              <button
+                type="button"
+                className="hero-menu-replay-btn"
+                onClick={() => { setMobileMenuOpen(false); handleReplayIntro(); }}
+              >
+                <RotateCcw size={13} />
+                <span>Replay Intro</span>
+              </button>
+            </div>
+          )}
+        </AnimatePresence>
+
         {/* Subtle celestial convergence geometry */}
         <div className="hero-convergence-lines" aria-hidden="true">
           <svg viewBox="0 0 1000 400" fill="none" style={{ width: '100%', height: '100%' }}>
@@ -144,21 +190,23 @@ function App() {
         </div>
 
         <div className="hero-identity-cluster">
-          {/* Level 1: Refined Academic Department Eyebrow */}
-          <div className="hero-eyebrow-badge">
-            <span className="eyebrow-dot">✦</span>
-            <span>DEPARTMENT OF COMPUTER APPLICATIONS</span>
-            <span className="eyebrow-dot">·</span>
-            <span>SRUSTI ACADEMY</span>
-            <span className="eyebrow-dot">✦</span>
-          </div>
-
-          {/* Level 2: Master Display Title */}
+          {/* Level 1: Master Display Title */}
           <h1 className="hero-master-title">
             TEJAS <span className="gold-accent">’26</span>
           </h1>
 
-          {/* Level 3: Thematic Tagline */}
+          {/* Golden Lotus Blossom Divider Ornament */}
+          <div className="hero-lotus-divider" aria-hidden="true">
+            <span className="hero-divider-line" />
+            <svg className="hero-lotus-icon" viewBox="0 0 36 20" fill="none">
+              <path d="M18 1.5 C16 6 12 12 7 14 C12 14.5 16 11 18 8 C20 11 24 14.5 29 14 C24 12 20 6 18 1.5 Z" fill="#C89B38"/>
+              <path d="M18 8 C15.5 12 10 16 4 16 C9 17 15 15 18 11.5 C21 15 27 17 32 16 C26 16 20.5 12 18 8 Z" fill="#E5B957" opacity="0.9"/>
+              <circle cx="18" cy="17" r="1.5" fill="#C89B38"/>
+            </svg>
+            <span className="hero-divider-line" />
+          </div>
+
+          {/* Level 2: Thematic Tagline */}
           <p className="hero-tagline">
             The Fresh Bloom
           </p>
@@ -166,6 +214,48 @@ function App() {
           <p className="hero-curated-lead">
             The Senior Welcome &amp; Ceremonial Induction for Incoming MCA Batch (2026–2028)
           </p>
+
+          {/* 4 Pillars Bar */}
+          <div className="hero-pillars-bar" role="list" aria-label="Ceremony Highlights">
+            <div className="hero-pillar-item" role="listitem">
+              <Users size={16} className="hero-pillar-icon" />
+              <span>NEW BEGINNINGS</span>
+            </div>
+            <span className="hero-pillar-sep" aria-hidden="true" />
+            <div className="hero-pillar-item" role="listitem">
+              <Sprout size={16} className="hero-pillar-icon" />
+              <span>BRIGHTER BONDS</span>
+            </div>
+            <span className="hero-pillar-sep" aria-hidden="true" />
+            <div className="hero-pillar-item" role="listitem">
+              <Star size={16} className="hero-pillar-icon" />
+              <span>MEMORIES AHEAD</span>
+            </div>
+            <span className="hero-pillar-sep" aria-hidden="true" />
+            <div className="hero-pillar-item" role="listitem">
+              <Infinity size={16} className="hero-pillar-icon" />
+              <span>A JOURNEY TOGETHER</span>
+            </div>
+          </div>
+
+          {/* CTA: OPEN LETTER DIRECTLY Button */}
+          <div className="hero-cta-wrapper">
+            <button
+              type="button"
+              className="hero-direct-open-btn"
+              onClick={() => {
+                playMicroTap();
+                setIsLetterOpen(true);
+                const el = document.getElementById('invitation-envelope');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }}
+              aria-label="Open Letter Directly"
+            >
+              <Mail size={16} className="hero-btn-mail-icon" />
+              <span className="hero-btn-label">OPEN LETTER DIRECTLY</span>
+              <ChevronRight size={16} className="hero-btn-arrow-icon" />
+            </button>
+          </div>
         </div>
 
         {/* 3. The 3D Interactive Envelope Centerpiece */}
@@ -173,6 +263,15 @@ function App() {
           isLetterOpen={isLetterOpen}
           onToggleOpen={(open) => setIsLetterOpen(open)}
         />
+
+        {/* Bottom Scroll to Explore Indicator */}
+        <div className="hero-scroll-indicator" aria-hidden="true">
+          <div className="mouse-icon">
+            <div className="mouse-wheel-dot" />
+          </div>
+          <span className="scroll-text">SCROLL TO EXPLORE</span>
+          <ChevronDown size={14} className="scroll-chevron" />
+        </div>
       </header>
 
       {/* 4. Main Experience Content Sections */}
