@@ -1,471 +1,271 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React from 'react';
+import { motion } from 'motion/react';
 import {
-  Clock, Gamepad2, Music, Award, Users, Utensils,
-  Flame, Mic2, Compass, CheckCircle2, ChevronDown,
-  Crown, CalendarPlus, MapPin, Music2,
-  Calendar, Layers, Sparkles
+  Clock, Utensils, Crown, MapPin, Users,
+  Music2, Megaphone, CalendarPlus
 } from 'lucide-react';
 import { playMicroTap } from '../utils/audio';
 
-const AGENDA_ITEMS = [
-  // --- ACT I: CEREMONIAL OVERTURE ---
+const TIMELINE_EVENTS = [
   {
     id: 1,
-    act: 'act-1',
-    actLabel: 'ACT I',
-    time: "10:00 AM – 10:30 AM",
-    duration: "30 MIN",
-    title: "Arrival & Batch Reception",
-    category: "Welcome & Seating",
-    badgeType: "welcome",
-    desc: "Doors open at JRD Tata Hall. Badge collection, commemorative welcome kits, guest registration, and batch seating.",
-    isMajor: false,
-    isFlagship: false,
-    icon: Compass,
-    highlights: ["Door registration & wristbands", "Seating arrangements by batch"]
+    time: "11:40 AM – 12:30 PM",
+    duration: "50 MIN",
+    title: "THE SENIOR-JUNIOR CONFLUENCE",
+    badge: "✦ THE CONFLUENCE",
+    subtitle: "Batch Induction & Camaraderie",
+    desc: "The official gathering begins as juniors and seniors unite under one roof. First introductions to mentors, interactive stage games, spirited banter, and forging bonds that will define your MCA years.",
+    icon: Users,
+    image: "/confluence_row1_gathering.jpg",
+    alt: "Auditorium stage gathering and senior-junior batch welcome"
   },
   {
     id: 2,
-    act: 'act-1',
-    actLabel: 'ACT I',
-    time: "10:30 AM – 10:45 AM",
-    duration: "15 MIN",
-    title: "Inaugural Lamp Lighting & Odissi Dance",
-    subtitle: "Sacred invocation & classical cultural benediction",
-    category: "Traditional Ceremony",
-    badgeType: "ceremony",
-    flagshipTag: "SACRED TRADITION",
-    desc: "Auspicious Mangalacharan lamp lighting led by department dignitaries, followed by a revered classical Odissi performance welcoming new beginnings.",
-    isMajor: true,
-    isFlagship: true,
-    icon: Flame,
-    highlights: ["Dignitary lamp lighting ceremony", "Classical Odissi invocation recital"]
+    time: "12:30 PM – 01:30 PM",
+    duration: "60 MIN",
+    title: "GRAND FELLOWSHIP LUNCH",
+    badge: "✦ 12:30 LUNCH",
+    subtitle: "Fellowship Feast",
+    desc: "A delightful lunch to strengthen bonds, share stories, and create memories with friends, seniors and faculty.",
+    icon: Utensils,
+    image: "/confluence_row2_feast.jpg",
+    alt: "Elegant fellowship banquet dining table"
   },
   {
     id: 3,
-    act: 'act-1',
-    actLabel: 'ACT I',
-    time: "10:45 AM – 11:15 AM",
-    duration: "30 MIN",
-    title: "Welcome Addresses & Faculty Blessings",
-    category: "Leadership Speeches",
-    badgeType: "speech",
-    desc: "Inspiring opening addresses and words of wisdom from esteemed MCA faculty heads, management directors, and senior organizing council.",
-    isMajor: false,
-    isFlagship: false,
-    icon: Mic2,
-    highlights: ["Inspirational faculty keynotes", "Senior council presidential address"]
+    time: "01:30 PM – 04:15 PM",
+    duration: "2 HR 45 MIN",
+    title: "MR. & MRS. FRESHER ’26",
+    badge: "✦ MR. & MRS. FRESHER",
+    subtitle: "Premier Honours & Accolades",
+    desc: "The most awaited title round with stunning performances, confidence, talent and personality. Our freshers take the stage to showcase their best and compete for the prestigious crowns.",
+    icon: Crown,
+    image: "/confluence_row3_crowning.jpg",
+    alt: "Mr. and Mrs. Fresher crowned couple on stage"
   },
-
-  // Intermission Buffer 1
-  {
-    isBuffer: true,
-    act: 'act-1',
-    time: "11:15 AM – 11:45 AM (30 MIN)",
-    label: "Stage Reset & Refreshment Prelude",
-    desc: "Auditorium transition, green-room prep for junior batch entry, and light refreshments."
-  },
-
-  // --- ACT II: SPOTLIGHT & FEAST ---
   {
     id: 4,
-    act: 'act-2',
-    actLabel: 'ACT II',
-    time: "11:45 AM – 12:00 PM",
-    duration: "15 MIN",
-    title: "Introduction of the Freshers",
-    subtitle: "Welcoming the Incoming MCA Batch (2026–2028)",
-    category: "Batch Spotlight",
-    badgeType: "spotlight",
-    desc: "The spotlight shines on the incoming juniors. First official stage introductions to fellow batchmates, faculty mentors, and senior leaders.",
-    isMajor: true,
-    isFlagship: false,
-    icon: Users,
-    highlights: ["Junior cohort stage roll-call", "Official batch welcome cheers"]
-  },
-  {
-    id: 5,
-    act: 'act-2',
-    actLabel: 'ACT II',
-    time: "12:00 PM – 12:45 PM",
+    time: "04:15 PM – 05:00 PM",
     duration: "45 MIN",
-    title: "Interactive Icebreakers & Fun Games",
-    category: "Interactive Banter",
-    badgeType: "games",
-    desc: "Spirited team games, fun stage banter, and laughter-packed icebreaking challenges curated to spark instant connections and lasting friendships.",
-    isMajor: false,
-    isFlagship: false,
-    icon: Gamepad2,
-    highlights: ["Team sync challenges", "Senior-junior impromptu trivia"]
-  },
-  {
-    id: 6,
-    act: 'act-2',
-    actLabel: 'ACT II',
-    time: "12:45 PM – 1:15 PM",
-    duration: "30 MIN",
-    title: "The Fellowship Grand Lunch",
-    subtitle: "Campus Dining Arena · Community feast",
-    category: "Fellowship Feast",
-    badgeType: "feast",
-    flagshipTag: "CAMPUS FEAST",
-    desc: "Festive multi-course buffet lunch at the campus dining arena, sharing memorable meals, casual conversations, and laughter across all batches.",
-    isMajor: true,
-    isFlagship: true,
-    icon: Utensils,
-    highlights: ["Festive campus buffet luncheon", "Informal faculty & student fellowship"]
-  },
-
-  // Intermission Buffer 2
-  {
-    isBuffer: true,
-    act: 'act-2',
-    time: "1:15 PM – 1:30 PM (15 MIN)",
-    label: "Afternoon Hall Reconvening",
-    desc: "Return to JRD Tata Hall and audiovisual check for the premier cultural afternoon showcase."
-  },
-
-  // --- ACT III: REVELRY & FINALE ---
-  {
-    id: 7,
-    act: 'act-3',
-    actLabel: 'ACT III',
-    time: "1:30 PM – 2:15 PM",
-    duration: "45 MIN",
-    title: "Ensemble Cultural Performances",
-    subtitle: "Group dance routines & dramatic sketches",
-    category: "Cultural Showcase",
-    badgeType: "performance",
-    desc: "High-octane group dance choreographies, live fusion band sets, and entertaining theatrical skits by talented senior and junior performers.",
-    isMajor: true,
-    isFlagship: false,
-    icon: Music,
-    highlights: ["Choreographed group dance medleys", "Student drama & musical acts"]
-  },
-  {
-    id: 8,
-    act: 'act-3',
-    actLabel: 'ACT III',
-    time: "2:15 PM – 3:00 PM",
-    duration: "45 MIN",
-    title: "Crowd Games & On-Stage Challenges",
-    category: "Stage Contests",
-    badgeType: "games",
-    desc: "Entertaining interactive games, spot talent dares, and playful senior-junior friendly competition with audience voting.",
-    isMajor: false,
-    isFlagship: false,
-    icon: Gamepad2,
-    highlights: ["Interactive audience rounds", "Spot prize showdowns"]
-  },
-  {
-    id: 9,
-    act: 'act-3',
-    actLabel: 'ACT III',
-    time: "3:00 PM – 3:15 PM",
-    duration: "15 MIN",
-    title: "Solo Spotlight: Vocals & Instruments",
-    category: "Individual Talent",
-    badgeType: "talent",
-    desc: "Individual acoustic vocal showcases, guitar melodies, and expressive solo stage talent demonstrating the artistic depth of the new batch.",
-    isMajor: true,
-    isFlagship: false,
-    icon: Mic2,
-    highlights: ["Acoustic vocal performances", "Solo instrumental showcases"]
-  },
-  {
-    id: 10,
-    act: 'act-3',
-    actLabel: 'ACT III',
-    time: "3:15 PM – 3:45 PM",
-    duration: "30 MIN",
-    title: "Final Showdown & Mystery Games",
-    category: "Stage Contests",
-    badgeType: "games",
-    desc: "The concluding round of whimsical stage challenges, impromptu charades, and playful banter setting the mood for the crowning honors.",
-    isMajor: false,
-    isFlagship: false,
-    icon: Gamepad2,
-    highlights: ["Mystery talent challenges", "Crowd cheer decibel contest"]
-  },
-  {
-    id: 11,
-    act: 'act-3',
-    actLabel: 'ACT III',
-    time: "3:45 PM – 4:00 PM",
-    duration: "15 MIN",
-    title: "Crowning of Mr. & Ms. Fresher ’26",
-    subtitle: "The Premier Honours & Title Ceremony of TEJAS ’26",
-    category: "Royal Accolades",
-    badgeType: "crowning",
-    flagshipTag: "PREMIER HONOURS",
-    desc: "The pinnacle ceremonial moment: announcement, sash presentation, and royal crowning of Mr. and Ms. Fresher TEJAS ’26 based on charisma, intellect, and grace.",
-    isMajor: true,
-    isFlagship: true,
-    icon: Crown,
-    highlights: ["Ceremonial sash & royal crowning", "Official titleholder address & photo honors"]
-  },
-  {
-    id: 12,
-    act: 'act-3',
-    actLabel: 'ACT III',
-    time: "4:00 PM – 4:15 PM",
-    duration: "15 MIN",
-    title: "Valedictory & Vote of Thanks",
-    category: "Closing Address",
-    badgeType: "closing",
-    desc: "Heartfelt gratitude expressed to faculty patrons, executive student coordinators, stage crews, volunteers, and the entire MCA family.",
-    isMajor: false,
-    isFlagship: false,
-    icon: CheckCircle2,
-    highlights: ["Acknowledgement of committees", "Faculty felicitation & final blessings"]
-  },
-  {
-    id: 13,
-    act: 'act-3',
-    actLabel: 'ACT III',
-    time: "4:15 PM – 5:00 PM",
-    duration: "45 MIN",
-    title: "The Grand DJ Floor & Celebration Bash",
-    subtitle: "Open floor euphoria, lights & commemorative photography",
-    category: "Grand Finale",
-    badgeType: "finale",
-    flagshipTag: "EPIC FINALE",
-    desc: "The auditorium transforms with dynamic beats, laser illuminations, open dance floor celebration, and the grand official batch group portrait.",
-    isMajor: true,
-    isFlagship: true,
+    title: "CELEBRATION FINALE & OPEN DJ FLOOR",
+    badge: "✦ UNTIL 5:00 PM",
+    subtitle: "Grand Finale",
+    desc: "Turn up the energy with a lively DJ floor. Dance, celebrate and close the day with music, laughter and unforgettable moments.",
     icon: Music2,
-    highlights: ["Live club-style DJ set", "Batch commemorative photo session"]
+    image: "/confluence_row4_dj.jpg",
+    alt: "Open DJ celebration floor with cheering students"
   }
 ];
 
 export default function AgendaSection() {
-  const [openSessionId, setOpenSessionId] = useState(2); // Default open to Inaugural Odissi
-
-  const toggleAccordion = (id) => {
-    playMicroTap();
-    setOpenSessionId(openSessionId === id ? null : id);
-  };
-
-  const filteredItems = AGENDA_ITEMS;
-
   const handleGoogleCalendar = () => {
     playMicroTap();
-    const title = encodeURIComponent("TEJAS '26 — MCA Freshers Day Gala");
+    const title = encodeURIComponent("TEJAS '26 — The Senior-Junior Confluence");
     const details = encodeURIComponent(
       "Official Freshers Day Celebration for MCA Batch 2026–2028.\n\n" +
       "Schedule Highlights:\n" +
-      "• 10:00 AM: Arrival & Seating\n" +
-      "• 10:30 AM: Lamp Lighting & Odissi Dance\n" +
-      "• 11:45 AM: Introduction of Freshers\n" +
-      "• 12:45 PM: Fellowship Grand Lunch\n" +
-      "• 01:30 PM: Cultural Performances & Games\n" +
-      "• 03:45 PM: Crowning of Mr. & Ms. Fresher '26\n" +
-      "• 04:15 PM: Grand DJ Floor & Celebration Bash\n\n" +
+      "• 11:40 AM: The Senior-Junior Confluence (Welcome & Camaraderie)\n" +
+      "• 12:30 PM: Grand Fellowship Lunch\n" +
+      "• 01:30 PM: Mr. & Mrs. Fresher '26 Title Round & Crowning\n" +
+      "• 04:15 PM – 05:00 PM: Celebration Finale & Open DJ Floor\n\n" +
       "Venue: JRD Tata Hall, Srusti Academy of Management & Technology, Bhubaneswar."
     );
     const location = encodeURIComponent("JRD Tata Hall, Srusti Academy of Management & Technology, Bhubaneswar");
-    const dates = "20261030T043000Z/20261030T113000Z";
+    const dates = "20261028T061000Z/20261028T113000Z";
     window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`, '_blank');
   };
 
   return (
-    <section className="agenda-section" id="agenda-flow" aria-label="Official Freshers Day Agenda">
-      <div className="section-container">
-        {/* Curated Editorial Section Header */}
-        <div className="agenda-master-header">
-          <div className="agenda-eyebrow-pill">
-            <span className="pill-dot">✦</span>
-            <span>OFFICIAL ITINERARY · 30 OCTOBER 2026</span>
-            <span className="pill-dot">✦</span>
+    <section 
+      id="agenda-flow" 
+      className="confluence-showcase-section"
+      aria-label="The Senior-Junior Confluence Programme"
+    >
+      {/* Background Decorative Ambience & Side Flourishes */}
+      <div className="confluence-bg-overlay" aria-hidden="true" />
+      <div className="confluence-corner-decor top-left" aria-hidden="true">
+        <img 
+          src="/confluence_header_couple.png" 
+          alt="" 
+          className="confluence-decor-img" 
+          loading="lazy"
+        />
+      </div>
+      <div className="confluence-corner-decor top-right" aria-hidden="true">
+        <img 
+          src="/confluence_header_crowns.png" 
+          alt="" 
+          className="confluence-decor-img" 
+          loading="lazy"
+        />
+      </div>
+      <div className="confluence-side-ribbon left" aria-hidden="true">
+        <img 
+          src="/confluence_ribbon_left.png" 
+          alt="" 
+          className="confluence-decor-img" 
+          loading="lazy"
+        />
+      </div>
+      <div className="confluence-side-ribbon right" aria-hidden="true">
+        <img 
+          src="/confluence_ribbon_right.png" 
+          alt="" 
+          className="confluence-decor-img" 
+          loading="lazy"
+        />
+      </div>
+
+      <div className="confluence-container">
+        {/* Header Block */}
+        <div className="confluence-header-block">
+          <div className="confluence-eyebrow-pill">
+            <span className="eyebrow-star">✦</span>
+            <span>28 OCTOBER 2026 · 11:40 AM TO 5:00 PM</span>
+            <span className="eyebrow-star">✦</span>
           </div>
 
-          <h2 className="agenda-master-title">
-            Freshers Day Programme Schedule
+          <h2 className="confluence-master-title">
+            <span className="title-maroon">THE SENIOR-JUNIOR</span>
+            <span className="title-gold">CONFLUENCE</span>
           </h2>
 
-          <p className="agenda-master-description">
-            A comprehensive, artfully paced celebration sequence hosted at <strong>JRD Tata Hall</strong>.
-            Spanning traditional blessings, batch spotlights, festive dining, and our jubilant DJ finale.
+          <p className="confluence-batch-tagline">
+            TWO BATCHES &nbsp;·&nbsp; ONE STAGE &nbsp;·&nbsp; A TIMELESS BOND
           </p>
 
-          {/* Key Facts Summary Ribbon */}
-          <div className="agenda-metrics-strip">
-            <div className="metric-cell">
-              <Clock size={15} className="metric-icon" />
-              <div className="metric-text">
-                <span className="metric-val">10:00 AM – 5:00 PM</span>
-                <span className="metric-label">7 Full Hours of Festivity</span>
+          <p className="confluence-lead-description">
+            A thoughtfully curated celebration hosted at <strong>JRD Tata Hall</strong>. From the warm welcome of juniors
+            to the grand fellowship lunch and the prestigious crowning of <strong>Mr. &amp; Mrs. Fresher</strong>.
+          </p>
+
+          {/* Key Metrics Capsule Ribbon (4 coordinates) */}
+          <div className="confluence-metrics-capsule">
+            <div className="confluence-metric-item">
+              <div className="metric-badge-icon">
+                <Clock size={16} />
+              </div>
+              <div className="metric-text-group">
+                <strong className="metric-primary">11:40 AM – 5:00 PM</strong>
+                <span className="metric-secondary">Official Event Hours</span>
               </div>
             </div>
 
-            <div className="metric-divider" aria-hidden="true" />
+            <div className="metric-separator" aria-hidden="true" />
 
-            <div className="metric-cell">
-              <Layers size={15} className="metric-icon" />
-              <div className="metric-text">
-                <span className="metric-val">13 Curated Moments</span>
-                <span className="metric-label">3 Signature Acts</span>
+            <div className="confluence-metric-item">
+              <div className="metric-badge-icon">
+                <Utensils size={16} />
+              </div>
+              <div className="metric-text-group">
+                <strong className="metric-primary">12:30 PM</strong>
+                <span className="metric-secondary">Grand Lunch Break</span>
               </div>
             </div>
 
-            <div className="metric-divider" aria-hidden="true" />
+            <div className="metric-separator" aria-hidden="true" />
 
-            <div className="metric-cell">
-              <MapPin size={15} className="metric-icon" />
-              <div className="metric-text">
-                <span className="metric-val">JRD Tata Hall</span>
-                <span className="metric-label">Srusti Academy, Bhubaneswar</span>
+            <div className="confluence-metric-item">
+              <div className="metric-badge-icon">
+                <Crown size={16} />
+              </div>
+              <div className="metric-text-group">
+                <strong className="metric-primary">Mr. &amp; Mrs. Fresher</strong>
+                <span className="metric-secondary">Premier Honours &amp; Titles</span>
               </div>
             </div>
-          </div>
 
-          {/* Quick Calendar Export Utility */}
-          <div className="agenda-utility-toolbar">
-            <button
-              onClick={handleGoogleCalendar}
-              className="agenda-tool-btn primary"
-              title="Add TEJAS '26 Freshers Day to Google Calendar"
-            >
-              <CalendarPlus size={14} />
-              <span>Add to Google Calendar</span>
-            </button>
+            <div className="metric-separator" aria-hidden="true" />
+
+            <div className="confluence-metric-item">
+              <div className="metric-badge-icon">
+                <MapPin size={16} />
+              </div>
+              <div className="metric-text-group">
+                <strong className="metric-primary">JRD Tata Hall</strong>
+                <span className="metric-secondary">Srusti Academy, Bhubaneswar</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Master Accordion Flow */}
-        <div className="agenda-accordion-wrapper" role="region" aria-label="Interactive Programme Accordion">
-          {filteredItems.map((item, index) => {
-            // Buffer Node between acts
-            if (item.isBuffer) {
+        {/* Master Timeline Card Container */}
+        <div className="confluence-timeline-card">
+          <div className="timeline-rows-list">
+            {TIMELINE_EVENTS.map((event, idx) => {
+              const IconComp = event.icon;
               return (
-                <div key={`buffer-${index}`} className="agenda-buffer-node" aria-hidden="true">
-                  <div className="buffer-line" />
-                  <div className="buffer-chip">
-                    <span className="buffer-time">{item.time}</span>
-                    <span className="buffer-sep">·</span>
-                    <span className="buffer-label">{item.label}</span>
+                <div key={event.id} className="confluence-timeline-row">
+                  {/* Timeline vertical node & spine */}
+                  <div className="timeline-spine-wrapper" aria-hidden="true">
+                    <div className="timeline-node-dot" />
+                    {idx < TIMELINE_EVENTS.length - 1 && <div className="timeline-spine-line" />}
                   </div>
-                  <div className="buffer-line" />
+
+                  {/* 1. Time Column */}
+                  <div className="timeline-time-col">
+                    <span className="time-range">{event.time}</span>
+                    <span className="time-duration">{event.duration}</span>
+                  </div>
+
+                  {/* 2. Circular Icon Column */}
+                  <div className="timeline-icon-col" aria-hidden="true">
+                    <div className="timeline-icon-disc">
+                      <IconComp size={18} />
+                    </div>
+                  </div>
+
+                  {/* 3. Information Column */}
+                  <div className="timeline-info-col">
+                    <div className="timeline-title-row">
+                      <h3 className="timeline-event-title">{event.title}</h3>
+                      <span className="timeline-badge-pill">{event.badge}</span>
+                    </div>
+
+                    <p className="timeline-event-subtitle">{event.subtitle}</p>
+                    <p className="timeline-event-desc">{event.desc}</p>
+                  </div>
+
+                  {/* 4. Photo Thumbnail on Right with Smooth Fade */}
+                  <div className="timeline-photo-col">
+                    <div className="photo-fade-scrim" aria-hidden="true" />
+                    <img 
+                      src={event.image} 
+                      alt={event.alt} 
+                      className="timeline-row-photo" 
+                      loading="lazy"
+                    />
+                  </div>
                 </div>
               );
-            }
-
-            const Icon = item.icon;
-            const isFlagship = item.isFlagship;
-            const isOpen = openSessionId === item.id;
-
-            return (
-              <div
-                key={item.id}
-                className={`agenda-accordion-item ${isOpen ? 'is-open' : ''} ${isFlagship ? 'is-flagship' : ''}`}
-              >
-                {/* Accordion Row Trigger */}
-                <button
-                  type="button"
-                  className="agenda-accordion-header"
-                  onClick={() => toggleAccordion(item.id)}
-                  aria-expanded={isOpen}
-                  aria-controls={`session-panel-${item.id}`}
-                  id={`session-header-${item.id}`}
-                >
-                  <div className="header-left-col">
-                    <div className="session-time-block">
-                      <span className="session-time-text">{item.time}</span>
-                      <span className="session-duration-tag">{item.duration}</span>
-                    </div>
-
-                    <div className="session-title-cluster">
-                      <div className="session-title-row">
-                        <h3 className="session-name">{item.title}</h3>
-                        {isFlagship && (
-                          <span className="flagship-badge">
-                            <Crown size={11} />
-                            <span>{item.flagshipTag}</span>
-                          </span>
-                        )}
-                      </div>
-                      <span className="session-category-label">{item.category}</span>
-                    </div>
-                  </div>
-
-                  <div className="header-right-col">
-                    <div className="session-icon-disc" aria-hidden="true">
-                      <Icon size={16} />
-                    </div>
-                    <div className={`accordion-chevron-box ${isOpen ? 'is-open' : ''}`} aria-hidden="true">
-                      <ChevronDown size={16} />
-                    </div>
-                  </div>
-                </button>
-
-                {/* Smooth Animated Height Drawer */}
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      id={`session-panel-${item.id}`}
-                      role="region"
-                      aria-labelledby={`session-header-${item.id}`}
-                      className="agenda-accordion-drawer"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                    >
-                      <div className="drawer-content-box">
-                        {item.subtitle && (
-                          <p className="drawer-subtitle">
-                            {item.subtitle}
-                          </p>
-                        )}
-
-                        <p className="drawer-description">
-                          {item.desc}
-                        </p>
-
-                        {item.highlights && item.highlights.length > 0 && (
-                          <div className="drawer-highlights-row">
-                            {item.highlights.map((h, hIdx) => (
-                              <span key={hIdx} className="highlight-tag">
-                                <span className="highlight-dot">✦</span>
-                                <span>{h}</span>
-                              </span>
-                            ))}
-                          </div>
-                        )}
-
-                        <div className="drawer-coordination-note">
-                          <span className="coord-note-label">COORDINATION PROTOCOL:</span>
-                          <span className="coord-note-text">
-                            {item.id === 2 && "Traditional Odissi blessing troupe opens the stage. Attendees are kindly requested to be seated by 10:25 AM."}
-                            {item.id === 4 && "Batch 2026–2028 representatives will be invited onto the dais. Keep cameras and phones ready for batch portraits!"}
-                            {item.id === 6 && "Multi-course feast served at the campus dining arena. Vegetarian and regional Odia culinary specialties included."}
-                            {item.id === 11 && "Official voting was completed during preliminary rounds. Royal sashes and commemorative trophies presented on center stage."}
-                            {item.id === 13 && "Grand sound system with bass drops and club lighting. Open floor welcoming all juniors, seniors, and alumni!"}
-                            {![2, 4, 6, 11, 13].includes(item.id) && "Organized by the Senior MCA Steering Committee in collaboration with faculty mentors at JRD Tata Hall."}
-                          </span>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
+            })}
+          </div>
         </div>
 
-        {/* Elegant Notice & Protocol Signpost */}
-        <div className="agenda-notice-capsule">
-          <div className="capsule-icon" aria-hidden="true">
-            <Compass size={18} />
+        {/* Bottom Schedule Protocol Capsule */}
+        <div className="confluence-protocol-card">
+          <div className="protocol-icon-box" aria-hidden="true">
+            <Megaphone size={18} />
           </div>
-          <div className="capsule-content">
-            <strong className="capsule-heading">Official MCA Steering Protocol</strong>
-            <p className="capsule-text">
-              Programme timings are aligned with official institutional guidelines for Srusti Academy of Management &amp; Technology.
-              Natural 15–30 minute buffers ensure relaxed transitions between formal ceremonial proceedings and vibrant stage revelry.
+          <div className="protocol-content">
+            <strong className="protocol-title">Official Schedule Protocol</strong>
+            <p className="protocol-text">
+              Reporting begins promptly at <strong>11:40 AM</strong> at JRD Tata Hall, with the Grand Fellowship Lunch at <strong>12:30 PM</strong>, followed by the crowning of <strong>Mr. &amp; Mrs. Fresher</strong> and concluding with the DJ celebration by <strong>5:00 PM</strong>.
             </p>
           </div>
+        </div>
+
+        {/* Calendar Sync Button */}
+        <div className="confluence-calendar-action">
+          <button
+            type="button"
+            onClick={handleGoogleCalendar}
+            className="confluence-cal-btn"
+            title="Add to Google Calendar"
+          >
+            <CalendarPlus size={15} />
+            <span>Add Schedule to Google Calendar (11:40 AM – 5:00 PM)</span>
+          </button>
         </div>
       </div>
     </section>

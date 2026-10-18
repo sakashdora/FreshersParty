@@ -378,8 +378,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
                 <p className="card-salutation">Dear Juniors,</p>
                 <p>
                   A new chapter begins, and we cannot wait to welcome you into the MCA family.
-                  On <strong>30 October 2026</strong>, join us for Freshers Day — a day of
-                  laughter, performances, and memories that will define your years here.
+                  On <strong>28 October 2026</strong>, join us for <strong>The Senior-Junior Confluence</strong> — featuring batch icebreakers, delicious lunch at <strong>12:30 PM</strong>, the crowning of <strong>Mr. &amp; Mrs. Fresher</strong>, and celebrations from <strong>11:40 AM to 5:00 PM</strong>.
                 </p>
                 <p className="card-quote">
                   "Let us make this beginning unforgettable, together."
@@ -389,15 +388,15 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
               {/* Date details */}
               <div className="card-dates">
                 <div className="card-date-item">
-                  <div className="date-label">Freshers Day</div>
-                  <div className="date-value">30 October 2026</div>
-                  <div className="date-note">Full Day Celebration</div>
+                  <div className="date-label">Event Date &amp; Time</div>
+                  <div className="date-value">28 October 2026</div>
+                  <div className="date-note">11:40 AM to 5:00 PM</div>
                 </div>
                 <div className="card-date-sep" />
                 <div className="card-date-item">
-                  <div className="date-label">Banner &amp; Name Reveal</div>
-                  <div className="date-value">27 October 2026</div>
-                  <div className="date-note">Look out for the drop</div>
+                  <div className="date-label">Venue &amp; Lunch</div>
+                  <div className="date-value">JRD Tata Hall</div>
+                  <div className="date-note">Lunch at 12:30 PM</div>
                 </div>
               </div>
 

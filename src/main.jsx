@@ -3,17 +3,15 @@ import { createRoot } from 'react-dom/client';
 import { AnimatePresence } from 'motion/react';
 import { 
   RotateCcw, Calendar, MapPin, Sparkles,
-  Users, Sprout, Star, Infinity, Mail, ChevronRight, ChevronDown, Menu, X 
+  Users, Sprout, Star, Infinity, Mail, ChevronRight, Menu, X 
 } from 'lucide-react';
 import './styles.css';
 import './styles-v3.css';
 
 import CinematicIntro from './components/CinematicIntro';
 import InteractiveEnvelope from './components/InteractiveEnvelope';
-import MilestonesSection from './components/MilestonesSection';
+import DressCodeEssentials from './components/DressCodeEssentials';
 import AgendaSection from './components/AgendaSection';
-import VisualGallery from './components/VisualGallery';
-import CelebrationCheers from './components/CelebrationCheers';
 import ClosingSignOff from './components/ClosingSignOff';
 import { initGlobalAudioUnlock, playMicroTap } from './utils/audio';
 
@@ -110,10 +108,8 @@ function App() {
 
           <div className="sticky-nav-links">
             <a href="#invitation-envelope" onClick={() => playMicroTap()}>Invitation</a>
-            <a href="#milestones" onClick={() => playMicroTap()}>Milestones</a>
-            <a href="#agenda-flow" onClick={() => playMicroTap()}>Programme</a>
-            <a href="#gallery" onClick={() => playMicroTap()}>Gallery</a>
-            <a href="#celebration-cheers" onClick={() => playMicroTap()}>Cheers</a>
+            <a href="#dress-code-essentials" onClick={() => playMicroTap()}>Dress &amp; Essentials</a>
+            <a href="#agenda-flow" onClick={() => playMicroTap()}>The Confluence</a>
           </div>
 
           <button
@@ -156,10 +152,8 @@ function App() {
           {mobileMenuOpen && (
             <div className="hero-menu-drawer" role="menu">
               <a href="#invitation-envelope" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Invitation</a>
-              <a href="#milestones" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Milestones</a>
-              <a href="#agenda-flow" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Programme</a>
-              <a href="#gallery" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Gallery</a>
-              <a href="#celebration-cheers" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Cheers</a>
+              <a href="#dress-code-essentials" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Dress &amp; Essentials</a>
+              <a href="#agenda-flow" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>The Confluence</a>
               <button
                 type="button"
                 className="hero-menu-replay-btn"
@@ -263,30 +257,15 @@ function App() {
           isLetterOpen={isLetterOpen}
           onToggleOpen={(open) => setIsLetterOpen(open)}
         />
-
-        {/* Bottom Scroll to Explore Indicator */}
-        <div className="hero-scroll-indicator" aria-hidden="true">
-          <div className="mouse-icon">
-            <div className="mouse-wheel-dot" />
-          </div>
-          <span className="scroll-text">SCROLL TO EXPLORE</span>
-          <ChevronDown size={14} className="scroll-chevron" />
-        </div>
       </header>
 
       {/* 4. Main Experience Content Sections */}
       <main id="main-content">
-        {/* Milestones: 27 Oct Banner Reveal & 30 Oct Freshers Day */}
-        <MilestonesSection />
+        {/* Dress Code & Event Essentials (Showcase) */}
+        <DressCodeEssentials />
 
-        {/* Authoritative Freshers Day Agenda (13 Sessions across 3 Acts) */}
+        {/* The Senior-Junior Confluence (11:40 AM to 5:00 PM · Lunch 12:30 PM · Mr. & Mrs. Fresher) */}
         <AgendaSection />
-
-        {/* Curated Visual Gallery */}
-        <VisualGallery />
-
-        {/* Celebration Cheers & Student Reactions */}
-        <CelebrationCheers />
       </main>
 
       {/* 5. Department Sign-Off & Architectural Footer */}
