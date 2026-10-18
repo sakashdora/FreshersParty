@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import confetti from 'canvas-confetti';
-import { RotateCcw, ArrowDown, Heart, ChevronRight } from 'lucide-react';
+import { RotateCcw, ArrowDown, Heart, ChevronRight, Maximize2, Download, X, Sparkles } from 'lucide-react';
 import { playPaperRustle, playMicroTap, playCelestialRevealChime } from '../utils/audio';
 
 // ─── State machine ─────────────────────────────────────────────────────────
@@ -10,6 +10,7 @@ const S = { SEALED: 'sealed', OPENING: 'opening', REVEALED: 'revealed', CLOSING:
 
 export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
   const [phase, setPhase] = useState(() => (isLetterOpen ? S.REVEALED : S.SEALED));
+  const [showLightbox, setShowLightbox] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const timerRef = useRef(null);
   const containerRef = useRef(null);
@@ -246,24 +247,17 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
             </div>
           </motion.div>
 
-          {/* ── LAYER 3: Invitation card ── */}
+          {/* ── LAYER 3: Invitation card (Official Invitation Letter Poster) ── */}
           <motion.article
             className={`env-card ${isOpen ? 'card-open' : 'card-tucked'}`}
             animate={phase}
             variants={rm ?? cardV}
             role="document"
-            aria-label="Official Invitation — TEJAS The Fresh Bloom"
+            aria-label="Official Invitation — TEJAS 2026 The Fresh Bloom"
           >
-            <div className="card-surface">
-              <div className="card-frame" aria-hidden="true" />
-
-              {/* Card header row */}
-              <div className="card-top">
-                <div className="card-monogram" aria-hidden="true">T</div>
-                <div className="card-top-copy">
-                  <span className="card-dept">DEPARTMENT OF COMPUTER APPLICATIONS</span>
-                  <strong className="card-inst">Srusti Academy of Management &amp; Technology</strong>
-                </div>
+            <div className="card-surface poster-surface">
+              {/* Card top bar with re-seal and expand buttons */}
+              <div className="card-poster-topbar">
                 {isOpen && !isBusy && (
                   <button
                     ref={resealBtnRef}
@@ -276,66 +270,48 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
                     <span>Fold Back</span>
                   </button>
                 )}
+
+                <button
+                  type="button"
+                  className="card-zoom-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playMicroTap();
+                    setShowLightbox(true);
+                  }}
+                  aria-label="View Full Invitation Poster"
+                >
+                  <Maximize2 size={11} />
+                  <span>Full View</span>
+                </button>
               </div>
 
-              <div className="card-rule" aria-hidden="true" />
-
-              {/* Identity block */}
-              <div className="card-identity">
-                <p className="card-eyebrow-copy">You are cordially invited to</p>
-                <h2 className="card-event-name">TEJAS <em>'26</em></h2>
-                <p className="card-tagline">The Fresh Bloom</p>
-              </div>
-
-              {/* Letter body */}
-              <div className="card-body-text">
-                <p className="card-salutation">Dear Juniors,</p>
-                <p>
-                  Welcome to Srusti Academy! Today, you become an irreplaceable part of our MCA family.
-                </p>
-                <p>
-                  We have put our hearts into planning a day full of fun icebreakers, stage performances,
-                  and delicious food — all dedicated to celebrating <em>you</em>. The celebration kicks off with our
-                  official <strong>Poster Reveal on Wednesday, 28 October at 4:00 PM</strong>, followed by the
-                  grand freshers celebration on <strong>Friday, 30 October 2026</strong> from 11:40 AM to 5:00 PM at JRD Tata Hall.
-                </p>
-                <p className="card-quote">
-                  “Let us make this beginning unforgettable, together.”
-                </p>
-              </div>
-
-              {/* Date details — Chronological Progression */}
-              <div className="card-dates">
-                <div className="card-date-item">
-                  <div className="date-label">01 · Poster Reveal</div>
-                  <div className="date-value">Wed, 28 Oct</div>
-                  <div className="date-note">4:00 PM Launch</div>
-                </div>
-                <div className="card-date-sep" />
-                <div className="card-date-item">
-                  <div className="date-label">02 · Main Event</div>
-                  <div className="date-value">Friday, 30 Oct</div>
-                  <div className="date-note">11:40 AM to 5:00 PM</div>
-                </div>
-                <div className="card-date-sep" />
-                <div className="card-date-item">
-                  <div className="date-label">Venue &amp; Lunch</div>
-                  <div className="date-value">JRD Tata Hall</div>
-                  <div className="date-note">Lunch at 12:30 PM</div>
+              {/* The Official Invitation Letter Poster File */}
+              <div 
+                className="card-poster-wrapper"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playMicroTap();
+                  setShowLightbox(true);
+                }}
+                role="button"
+                tabIndex={isOpen ? 0 : -1}
+                aria-label="Click to enlarge invitation letter"
+              >
+                <img
+                  src="/invitation_letter_tejas2026.jpg"
+                  alt="Official Invitation Letter — TEJAS 2026 The Fresh Bloom · Srusti Academy MCA Freshers"
+                  className="card-poster-img"
+                  loading="eager"
+                />
+                <div className="card-poster-tap-hint">
+                  <Sparkles size={11} />
+                  <span>Click to view full size</span>
                 </div>
               </div>
 
-              {/* Sign-off */}
-              <div className="card-signoff">
-                <span className="card-signoff-quote">"The Fresh Bloom."</span>
-                <div className="card-signoff-by">
-                  <strong>With love, from your seniors</strong>
-                  <span>MCA Batch 2025–2027 · Srusti Academy</span>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="card-actions">
+              {/* Action Buttons */}
+              <div className="card-actions poster-actions">
                 <a
                   href="#agenda-flow"
                   className="card-btn card-btn-primary"
@@ -453,6 +429,50 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
         <p className="env-caption">
           <strong>Fold Back</strong> or press <kbd>Esc</kbd> to re-seal
         </p>
+      )}
+
+      {/* Lightbox Modal for Full View & Download of Invitation Poster */}
+      {showLightbox && (
+        <div 
+          className="poster-lightbox-overlay" 
+          onClick={() => setShowLightbox(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Full size invitation letter"
+        >
+          <div className="poster-lightbox-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="poster-lightbox-header">
+              <span className="lightbox-title">TEJAS 2026 — Official Invitation</span>
+              <div className="lightbox-actions">
+                <a
+                  href="/invitation_letter_tejas2026.jpg"
+                  download="TEJAS_2026_Invitation.jpg"
+                  className="lightbox-btn download-btn"
+                  aria-label="Download invitation"
+                  onClick={() => playMicroTap()}
+                >
+                  <Download size={13} />
+                  <span>Download</span>
+                </a>
+                <button
+                  type="button"
+                  className="lightbox-btn close-btn"
+                  onClick={() => setShowLightbox(false)}
+                  aria-label="Close modal"
+                >
+                  <X size={15} />
+                </button>
+              </div>
+            </div>
+            <div className="poster-lightbox-body">
+              <img
+                src="/invitation_letter_tejas2026.jpg"
+                alt="TEJAS 2026 The Fresh Bloom Invitation Letter"
+                className="lightbox-img"
+              />
+            </div>
+          </div>
+        </div>
       )}
     </section>
   );
