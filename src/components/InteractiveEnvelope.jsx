@@ -306,10 +306,6 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
                   className="card-poster-img"
                   loading="eager"
                 />
-                <div className="card-poster-tap-hint">
-                  <Sparkles size={11} />
-                  <span>Click to view full size</span>
-                </div>
               </div>
 
               {/* Action Buttons */}
