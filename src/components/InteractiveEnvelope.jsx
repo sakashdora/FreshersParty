@@ -27,6 +27,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
   const isClosing = phase === S.CLOSING;
   const isBusy = isOpening || isClosing;
   const isOpen = isRevealed || isOpening;
+  const isExpanded = phase !== S.SEALED; // Remains true during OPENING, REVEALED, and CLOSING
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth <= 640);
@@ -47,7 +48,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
     });
     playPaperRustle();
 
-    const delay = prefersReducedMotion ? 0 : 720;
+    const delay = prefersReducedMotion ? 0 : 780;
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       setPhase(prev => {
@@ -71,7 +72,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
     }, delay);
   }, [prefersReducedMotion, onToggleOpen]);
 
-  // ── CLOSE sequence ─────────────────────────────────────────────────────────
+  // ── CLOSE sequence (Smooth Refold) ─────────────────────────────────────────
   const doClose = useCallback(() => {
     setPhase(prev => {
       if (prev !== S.REVEALED) return prev; // guard
@@ -79,7 +80,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
     });
     playPaperRustle();
 
-    const delay = prefersReducedMotion ? 0 : 700;
+    const delay = prefersReducedMotion ? 0 : 980;
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       setPhase(prev => {
@@ -110,15 +111,15 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
       e.preventDefault();
       if (isSealed) doOpen();
       else if (isRevealed) doClose();
-    } else if (e.key === 'Escape' && isOpen) {
+    } else if (e.key === 'Escape' && isExpanded) {
       e.preventDefault();
       doClose();
     }
-  }, [isBusy, isSealed, isRevealed, isOpen, doOpen, doClose]);
+  }, [isBusy, isSealed, isRevealed, isExpanded, doOpen, doClose]);
 
   // ── 3-D hover tilt (desktop only, sealed state only) ──────────────────────
   const handleMouseMove = (e) => {
-    if (isOpen || isBusy || !containerRef.current || isMobile) return;
+    if (isExpanded || isBusy || !containerRef.current || isMobile) return;
     const r = containerRef.current.getBoundingClientRect();
     const nx = (e.clientX - r.left - r.width / 2) / (r.width / 2);
     const ny = (e.clientY - r.top - r.height / 2) / (r.height / 2);
@@ -126,35 +127,36 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
   };
   const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
 
-  // ── Animation variants ────────────────────────────────────────────────────
+  // ── Animation variants with buttery-smooth refold timing ──────────────────
   const EASE = [0.16, 1, 0.3, 1];
+  const CLOSE_EASE = [0.4, 0, 0.2, 1];
 
   const flapV = {
-    sealed: { rotateX: 0, transition: { duration: 0.55, delay: 0.28, ease: EASE } },
-    opening: { rotateX: -180, transition: { duration: 0.62, delay: 0.06, ease: EASE } },
+    sealed: { rotateX: 0, transition: { duration: 0.55, delay: 0.25, ease: EASE } },
+    opening: { rotateX: -180, transition: { duration: 0.62, delay: 0.05, ease: EASE } },
     revealed: { rotateX: -180 },
-    closing: { rotateX: 0, transition: { duration: 0.52, delay: 0.30, ease: EASE } },
+    closing: { rotateX: 0, transition: { duration: 0.50, delay: 0.35, ease: CLOSE_EASE } },
   };
 
   const cardV = {
     sealed: { y: 24, opacity: 0, scale: 0.96, transition: { duration: 0.4, ease: 'easeIn' } },
-    opening: { y: isMobile ? -235 : -390, opacity: 1, scale: 1, transition: { duration: 0.72, delay: 0.28, ease: EASE } },
-    revealed: { y: isMobile ? -235 : -390, opacity: 1, scale: 1 },
-    closing: { y: 24, opacity: 0, scale: 0.96, transition: { duration: 0.38, ease: 'easeIn' } },
+    opening: { y: isMobile ? -230 : -350, opacity: 1, scale: 1, transition: { duration: 0.72, delay: 0.25, ease: EASE } },
+    revealed: { y: isMobile ? -230 : -350, opacity: 1, scale: 1 },
+    closing: { y: 30, opacity: 0, scale: 0.94, transition: { duration: 0.42, ease: CLOSE_EASE } },
   };
 
   const sealV = {
     sealed: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
-    opening: { opacity: 0, scale: 0.5, y: -14, transition: { duration: 0.28, ease: 'easeIn' } },
+    opening: { opacity: 0, scale: 0.5, y: -14, transition: { duration: 0.25, ease: 'easeIn' } },
     revealed: { opacity: 0, scale: 0.5, y: -14 },
-    closing: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.35, delay: 0.35, ease: 'easeOut' } },
+    closing: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.35, delay: 0.68, ease: EASE } },
   };
 
   const ribbonV = {
     sealed: { opacity: 1, scaleY: 1, transition: { duration: 0.35, ease: 'easeOut' } },
     opening: { opacity: 0, scaleY: 0.5, transition: { duration: 0.26, ease: 'easeIn' } },
     revealed: { opacity: 0, scaleY: 0.5 },
-    closing: { opacity: 1, scaleY: 1, transition: { duration: 0.3, delay: 0.4, ease: 'easeOut' } },
+    closing: { opacity: 1, scaleY: 1, transition: { duration: 0.3, delay: 0.5, ease: 'easeOut' } },
   };
 
   const rm = prefersReducedMotion ? {} : undefined; // empty variants when reduced-motion
@@ -183,7 +185,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
       {/* 3D chassis */}
       <div
         ref={containerRef}
-        className={`env-chassis ${isOpen ? 'is-open' : 'is-sealed'}`}
+        className={`env-chassis ${isExpanded ? 'is-open' : 'is-sealed'} ${isClosing ? 'is-closing' : ''}`}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onClick={isSealed && !isBusy ? doOpen : undefined}
@@ -191,14 +193,14 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
         tabIndex={isSealed ? 0 : -1}
         role="button"
         aria-label={isSealed ? 'Sealed invitation envelope. Press Enter or Space to open.' : 'Opened envelope'}
-        aria-expanded={isOpen}
+        aria-expanded={isExpanded}
       >
         <div className="env-ground-shadow" aria-hidden="true" />
 
         {/* Tilt wrapper */}
         <motion.div
           className="env-3d-shell"
-          animate={{ rotateX: !isOpen ? tilt.x : 0, rotateY: !isOpen ? tilt.y : 0 }}
+          animate={{ rotateX: isSealed ? tilt.x : 0, rotateY: isSealed ? tilt.y : 0 }}
           transition={{ type: 'spring', damping: 26, stiffness: 200 }}
         >
           {/* ── LAYER 1: Envelope body ── */}
@@ -249,7 +251,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
 
           {/* ── LAYER 3: Invitation card (Official Invitation Letter Poster) ── */}
           <motion.article
-            className={`env-card ${isOpen ? 'card-open' : 'card-tucked'}`}
+            className={`env-card ${isExpanded ? 'card-open' : 'card-tucked'}`}
             animate={phase}
             variants={rm ?? cardV}
             role="document"
@@ -258,7 +260,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
             <div className="card-surface poster-surface">
               {/* Card top bar with re-seal and expand buttons */}
               <div className="card-poster-topbar">
-                {isOpen && !isBusy && (
+                {isRevealed && !isBusy && (
                   <button
                     ref={resealBtnRef}
                     type="button"

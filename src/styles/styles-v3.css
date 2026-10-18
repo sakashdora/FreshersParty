@@ -1179,17 +1179,18 @@
   margin: 0 auto;
   perspective: 1400px;
   outline: none;
-  transition: min-height 0.75s cubic-bezier(0.16,1,0.3,1);
+  transition: min-height 0.85s cubic-bezier(0.16,1,0.3,1), padding-top 0.85s cubic-bezier(0.16,1,0.3,1);
 }
 
 .env-chassis.is-sealed {
   min-height: 290px;
+  padding-top: 0;
   cursor: pointer;
 }
 
 .env-chassis.is-open {
   min-height: 980px;
-  padding-top: 420px;
+  padding-top: 400px;
   margin-bottom: 32px;
   cursor: default;
 }
@@ -1359,15 +1360,18 @@
   right: 20px;
   top: 16px;
   z-index: 5;
+  transition: z-index 0.2s ease;
 }
 
 .env-card.card-tucked {
+  z-index: 3;
   pointer-events: none;
   overflow: hidden;
   height: 330px;
 }
 
 .env-card.card-open {
+  z-index: 30 !important;
   pointer-events: auto;
 }
 
