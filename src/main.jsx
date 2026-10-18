@@ -5,8 +5,8 @@ import {
   RotateCcw, Calendar, MapPin, Sparkles,
   Users, Sprout, Star, Infinity, Mail, ChevronRight, Menu, X 
 } from 'lucide-react';
-import './styles.css';
-import './styles-v3.css';
+import './styles/styles.css';
+import './styles/styles-v3.css';
 
 import CinematicIntro from './components/CinematicIntro';
 import InteractiveEnvelope from './components/InteractiveEnvelope';
@@ -69,7 +69,7 @@ function App() {
   };
 
   return (
-    <div className="tejas-app-root sangama-app-root">
+    <div className="tejas-app-root">
       {/* Scroll Storytelling Progress Bar */}
       <div
         className="tejas-scroll-progress-line"
@@ -109,7 +109,7 @@ function App() {
           <div className="sticky-nav-links">
             <a href="#invitation-envelope" onClick={() => playMicroTap()}>Invitation</a>
             <a href="#dress-code-essentials" onClick={() => playMicroTap()}>Dress &amp; Essentials</a>
-            <a href="#agenda-flow" onClick={() => playMicroTap()}>The Confluence</a>
+            <a href="#agenda-flow" onClick={() => playMicroTap()}>Schedule</a>
           </div>
 
           <button
@@ -130,11 +130,9 @@ function App() {
         <div className="hero-top-bar">
           <div className="hero-top-spacer" aria-hidden="true" />
           <div className="hero-eyebrow-badge">
-            <span className="eyebrow-dot">✦</span>
             <span>DEPARTMENT OF COMPUTER APPLICATIONS</span>
-            <span className="eyebrow-dot">✦</span>
-            <span>SRUSTI ACADEMY</span>
-            <span className="eyebrow-dot">✦</span>
+            <span className="eyebrow-dot">·</span>
+            <span>SRUSTI ACADEMY OF MANAGEMENT &amp; TECHNOLOGY</span>
           </div>
           <button
             type="button"
@@ -150,23 +148,28 @@ function App() {
         {/* Slide-down Menu Drawer */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <div className="hero-menu-drawer" role="menu">
-              <a href="#invitation-envelope" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Invitation</a>
+            <div
+              className="hero-menu-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Mobile Navigation Menu"
+            >
+              <a href="#invitation-envelope" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Invitation Letter</a>
               <a href="#dress-code-essentials" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Dress &amp; Essentials</a>
-              <a href="#agenda-flow" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>The Confluence</a>
+              <a href="#agenda-flow" onClick={() => { playMicroTap(); setMobileMenuOpen(false); }}>Celebration Schedule</a>
               <button
                 type="button"
                 className="hero-menu-replay-btn"
                 onClick={() => { setMobileMenuOpen(false); handleReplayIntro(); }}
               >
                 <RotateCcw size={13} />
-                <span>Replay Intro</span>
+                <span>Replay Opening</span>
               </button>
             </div>
           )}
         </AnimatePresence>
 
-        {/* Subtle celestial convergence geometry */}
+        {/* Subtle decorative convergence geometry */}
         <div className="hero-convergence-lines" aria-hidden="true">
           <svg viewBox="0 0 1000 400" fill="none" style={{ width: '100%', height: '100%' }}>
             <defs>
@@ -206,33 +209,37 @@ function App() {
           </p>
 
           <p className="hero-curated-lead">
-            The Senior Welcome &amp; Ceremonial Induction for Incoming MCA Batch (2026–2028)
+            With love, from your seniors to the MCA Batch of 2026–2028.
           </p>
 
-          {/* 4 Pillars Bar */}
-          <div className="hero-pillars-bar" role="list" aria-label="Ceremony Highlights">
+          {/* Essential Event Quick-Facts Bar — Chronological Highlights */}
+          <div className="hero-pillars-bar" role="list" aria-label="Event Key Logistics">
             <div className="hero-pillar-item" role="listitem">
-              <Users size={16} className="hero-pillar-icon" />
-              <span>NEW BEGINNINGS</span>
+              <Sparkles size={14} className="hero-pillar-icon" />
+              <span>POSTER REVEAL: 28 OCT (4 PM)</span>
             </div>
-            <span className="hero-pillar-sep" aria-hidden="true" />
+            <span className="hero-pillar-sep" aria-hidden="true">·</span>
             <div className="hero-pillar-item" role="listitem">
-              <Sprout size={16} className="hero-pillar-icon" />
-              <span>BRIGHTER BONDS</span>
+              <Calendar size={14} className="hero-pillar-icon" />
+              <span>MAIN EVENT: FRI, 30 OCT</span>
             </div>
-            <span className="hero-pillar-sep" aria-hidden="true" />
+            <span className="hero-pillar-sep" aria-hidden="true">·</span>
             <div className="hero-pillar-item" role="listitem">
-              <Star size={16} className="hero-pillar-icon" />
-              <span>MEMORIES AHEAD</span>
+              <MapPin size={14} className="hero-pillar-icon" />
+              <span>JRD TATA HALL</span>
             </div>
-            <span className="hero-pillar-sep" aria-hidden="true" />
+            <span className="hero-pillar-sep" aria-hidden="true">·</span>
             <div className="hero-pillar-item" role="listitem">
-              <Infinity size={16} className="hero-pillar-icon" />
-              <span>A JOURNEY TOGETHER</span>
+              <Users size={14} className="hero-pillar-icon" />
+              <span>11:40 AM TO 5:00 PM</span>
             </div>
           </div>
 
-          {/* CTA: OPEN LETTER DIRECTLY Button */}
+          <p className="hero-date-notice">
+            Poster Reveal: <strong>Wednesday, 28 October at 4:00 PM</strong> &nbsp;·&nbsp; Main Event: <strong>Friday, 30 October (11:40 AM–5:00 PM at JRD Tata Hall)</strong>
+          </p>
+
+          {/* CTA: Open Your Invitation */}
           <div className="hero-cta-wrapper">
             <button
               type="button"
@@ -243,10 +250,10 @@ function App() {
                 const el = document.getElementById('invitation-envelope');
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }}
-              aria-label="Open Letter Directly"
+              aria-label="Open your invitation letter"
             >
               <Mail size={16} className="hero-btn-mail-icon" />
-              <span className="hero-btn-label">OPEN LETTER DIRECTLY</span>
+              <span className="hero-btn-label">Open Your Invitation</span>
               <ChevronRight size={16} className="hero-btn-arrow-icon" />
             </button>
           </div>

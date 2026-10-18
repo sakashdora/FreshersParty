@@ -13,6 +13,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
   const prefersReducedMotion = useReducedMotion();
   const timerRef = useRef(null);
   const containerRef = useRef(null);
+  const resealBtnRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== 'undefined' ? window.innerWidth <= 640 : false
@@ -39,7 +40,6 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
 
   // ── OPEN sequence ──────────────────────────────────────────────────────────
   const doOpen = useCallback(() => {
-    // Functional updater — never reads stale phase
     setPhase(prev => {
       if (prev !== S.SEALED) return prev; // guard
       return S.OPENING;
@@ -56,14 +56,17 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
       playCelestialRevealChime();
       if (!prefersReducedMotion) {
         confetti({
-          particleCount: 90,
-          spread: 75,
+          particleCount: 75,
+          spread: 70,
           origin: { y: 0.55 },
           colors: ['#E5B957', '#C89B38', '#7A1030', '#FCE7A2', '#FDF8F0'],
           gravity: 0.85,
         });
       }
       if (onToggleOpen) onToggleOpen(true);
+      setTimeout(() => {
+        resealBtnRef.current?.focus();
+      }, 150);
     }, delay);
   }, [prefersReducedMotion, onToggleOpen]);
 
@@ -83,6 +86,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
         return S.SEALED;
       });
       if (onToggleOpen) onToggleOpen(false);
+      containerRef.current?.focus();
     }, delay);
   }, [prefersReducedMotion, onToggleOpen]);
 
@@ -132,10 +136,10 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
   };
 
   const cardV = {
-    sealed: { y: 32, opacity: 0, scale: 0.97, transition: { duration: 0.4, ease: 'easeIn' } },
-    opening: { y: isMobile ? -290 : -410, opacity: 1, scale: 1, transition: { duration: 0.72, delay: 0.28, ease: EASE } },
-    revealed: { y: isMobile ? -290 : -410, opacity: 1, scale: 1 },
-    closing: { y: 32, opacity: 0, scale: 0.97, transition: { duration: 0.38, ease: 'easeIn' } },
+    sealed: { y: 24, opacity: 0, scale: 0.96, transition: { duration: 0.4, ease: 'easeIn' } },
+    opening: { y: isMobile ? -235 : -390, opacity: 1, scale: 1, transition: { duration: 0.72, delay: 0.28, ease: EASE } },
+    revealed: { y: isMobile ? -235 : -390, opacity: 1, scale: 1 },
+    closing: { y: 24, opacity: 0, scale: 0.96, transition: { duration: 0.38, ease: 'easeIn' } },
   };
 
   const sealV = {
@@ -167,12 +171,10 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
       {isOpen && (
         <div className="env-header env-header-opened">
           <div className="env-eyebrow">
-            <span className="env-eyebrow-dot">✦</span>
-            <span>OFFICIAL CORRESPONDENCE · MCA BATCH 2026–2028</span>
-            <span className="env-eyebrow-dot">✦</span>
+            <span>A SPECIAL WELCOME · MCA BATCH 2026–2028</span>
           </div>
           <p className="env-subtitle">
-            Your invitation has been unveiled. Read the details below.
+            We have prepared something special for you. Here are your celebration details.
           </p>
         </div>
       )}
@@ -191,95 +193,6 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
         aria-expanded={isOpen}
       >
         <div className="env-ground-shadow" aria-hidden="true" />
-
-        {/* Flanking realistic botanical golden laurel branches matching Image 2 */}
-        <div className="env-flank-laurel flank-left" aria-hidden="true">
-          <svg viewBox="0 0 180 120" fill="none" className="laurel-branch-svg">
-            <defs>
-              <linearGradient id="laurelStemGradL" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#75500A" />
-                <stop offset="50%" stopColor="#E5B957" />
-                <stop offset="100%" stopColor="#FFF4D0" />
-              </linearGradient>
-              <linearGradient id="laurelLeafGradL" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FFF8E0" />
-                <stop offset="30%" stopColor="#F5D061" />
-                <stop offset="70%" stopColor="#C89B38" />
-                <stop offset="100%" stopColor="#7A5208" />
-              </linearGradient>
-              <filter id="laurelBranchShadow" x="-30%" y="-30%" width="160%" height="160%">
-                <feDropShadow dx="0" dy="5" stdDeviation="4" floodColor="#000000" floodOpacity="0.5" />
-              </filter>
-            </defs>
-            <g filter="url(#laurelBranchShadow)">
-              <path d="M 15 110 C 50 102 95 85 160 35" stroke="url(#laurelStemGradL)" strokeWidth="3.5" strokeLinecap="round" />
-              <path d="M 15 110 C 50 102 95 85 160 35" stroke="#FFFFFF" strokeWidth="1" strokeLinecap="round" opacity="0.6" />
-
-              <path d="M 28 102 C 12 90 10 70 32 72 C 42 85 36 98 28 102 Z" fill="url(#laurelLeafGradL)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 28 102 Q 22 84 32 72" stroke="#FFFDF0" strokeWidth="1" opacity="0.8" />
-
-              <path d="M 45 96 C 52 74 38 60 56 62 C 64 76 56 92 45 96 Z" fill="url(#laurelLeafGradL)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 45 96 Q 50 78 56 62" stroke="#FFFDF0" strokeWidth="1" opacity="0.8" />
-
-              <path d="M 65 85 C 42 70 45 46 72 52 C 80 66 74 80 65 85 Z" fill="url(#laurelLeafGradL)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 65 85 Q 58 66 72 52" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.85" />
-
-              <path d="M 88 75 C 96 52 82 38 102 42 C 108 58 98 72 88 75 Z" fill="url(#laurelLeafGradL)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 88 75 Q 94 56 102 42" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.85" />
-
-              <path d="M 112 62 C 90 48 95 24 124 30 C 130 46 122 58 112 62 Z" fill="url(#laurelLeafGradL)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 112 62 Q 106 42 124 30" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.9" />
-
-              <path d="M 134 48 C 142 26 128 12 148 18 C 154 32 144 45 134 48 Z" fill="url(#laurelLeafGradL)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 134 48 Q 140 30 148 18" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.9" />
-
-              <path d="M 160 35 C 160 12 178 5 180 20 C 178 32 168 36 160 35 Z" fill="url(#laurelLeafGradL)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 160 35 Q 170 20 180 20" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.95" />
-            </g>
-          </svg>
-        </div>
-        <div className="env-flank-laurel flank-right" aria-hidden="true">
-          <svg viewBox="0 0 180 120" fill="none" className="laurel-branch-svg">
-            <defs>
-              <linearGradient id="laurelStemGradR" x1="100%" y1="100%" x2="0%" y2="0%">
-                <stop offset="0%" stopColor="#75500A" />
-                <stop offset="50%" stopColor="#E5B957" />
-                <stop offset="100%" stopColor="#FFF4D0" />
-              </linearGradient>
-              <linearGradient id="laurelLeafGradR" x1="100%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#FFF8E0" />
-                <stop offset="30%" stopColor="#F5D061" />
-                <stop offset="70%" stopColor="#C89B38" />
-                <stop offset="100%" stopColor="#7A5208" />
-              </linearGradient>
-            </defs>
-            <g filter="url(#laurelBranchShadow)">
-              <path d="M 165 110 C 130 102 85 85 20 35" stroke="url(#laurelStemGradR)" strokeWidth="3.5" strokeLinecap="round" />
-              <path d="M 165 110 C 130 102 85 85 20 35" stroke="#FFFFFF" strokeWidth="1" strokeLinecap="round" opacity="0.6" />
-
-              <path d="M 152 102 C 168 90 170 70 148 72 C 138 85 144 98 152 102 Z" fill="url(#laurelLeafGradR)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 152 102 Q 158 84 148 72" stroke="#FFFDF0" strokeWidth="1" opacity="0.8" />
-
-              <path d="M 135 96 C 128 74 142 60 124 62 C 116 76 124 92 135 96 Z" fill="url(#laurelLeafGradR)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 135 96 Q 130 78 124 62" stroke="#FFFDF0" strokeWidth="1" opacity="0.8" />
-
-              <path d="M 115 85 C 138 70 135 46 108 52 C 100 66 106 80 115 85 Z" fill="url(#laurelLeafGradR)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 115 85 Q 122 66 108 52" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.85" />
-
-              <path d="M 92 75 C 84 52 98 38 78 42 C 72 58 82 72 92 75 Z" fill="url(#laurelLeafGradR)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 92 75 Q 86 56 78 42" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.85" />
-
-              <path d="M 68 62 C 90 48 85 24 56 30 C 50 46 58 58 68 62 Z" fill="url(#laurelLeafGradR)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 68 62 Q 74 42 56 30" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.9" />
-
-              <path d="M 46 48 C 38 26 52 12 32 18 C 26 32 36 45 46 48 Z" fill="url(#laurelLeafGradR)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 46 48 Q 40 30 32 18" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.9" />
-
-              <path d="M 20 35 C 20 12 2 5 0 20 C 2 32 12 36 20 35 Z" fill="url(#laurelLeafGradR)" stroke="#6E4804" strokeWidth="0.8" />
-              <path d="M 20 35 Q 10 20 0 20" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.95" />
-            </g>
-          </svg>
-        </div>
 
         {/* Tilt wrapper */}
         <motion.div
@@ -353,6 +266,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
                 </div>
                 {isOpen && !isBusy && (
                   <button
+                    ref={resealBtnRef}
                     type="button"
                     className="card-reseal-btn"
                     onClick={(e) => { e.stopPropagation(); doClose(); }}
@@ -377,19 +291,30 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
               <div className="card-body-text">
                 <p className="card-salutation">Dear Juniors,</p>
                 <p>
-                  A new chapter begins, and we cannot wait to welcome you into the MCA family.
-                  On <strong>28 October 2026</strong>, join us for <strong>The Senior-Junior Confluence</strong> — featuring batch icebreakers, delicious lunch at <strong>12:30 PM</strong>, the crowning of <strong>Mr. &amp; Mrs. Fresher</strong>, and celebrations from <strong>11:40 AM to 5:00 PM</strong>.
+                  Welcome to Srusti Academy! Today, you become an irreplaceable part of our MCA family.
+                </p>
+                <p>
+                  We have put our hearts into planning a day full of fun icebreakers, stage performances,
+                  and delicious food — all dedicated to celebrating <em>you</em>. The celebration kicks off with our
+                  official <strong>Poster Reveal on Wednesday, 28 October at 4:00 PM</strong>, followed by the
+                  grand freshers celebration on <strong>Friday, 30 October 2026</strong> from 11:40 AM to 5:00 PM at JRD Tata Hall.
                 </p>
                 <p className="card-quote">
-                  "Let us make this beginning unforgettable, together."
+                  “Let us make this beginning unforgettable, together.”
                 </p>
               </div>
 
-              {/* Date details */}
+              {/* Date details — Chronological Progression */}
               <div className="card-dates">
                 <div className="card-date-item">
-                  <div className="date-label">Event Date &amp; Time</div>
-                  <div className="date-value">28 October 2026</div>
+                  <div className="date-label">01 · Poster Reveal</div>
+                  <div className="date-value">Wed, 28 Oct</div>
+                  <div className="date-note">4:00 PM Launch</div>
+                </div>
+                <div className="card-date-sep" />
+                <div className="card-date-item">
+                  <div className="date-label">02 · Main Event</div>
+                  <div className="date-value">Friday, 30 Oct</div>
                   <div className="date-note">11:40 AM to 5:00 PM</div>
                 </div>
                 <div className="card-date-sep" />
@@ -404,8 +329,8 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
               <div className="card-signoff">
                 <span className="card-signoff-quote">"The Fresh Bloom."</span>
                 <div className="card-signoff-by">
-                  <strong>Your Seniors</strong>
-                  <span>MCA · Srusti Academy</span>
+                  <strong>With love, from your seniors</strong>
+                  <span>MCA Batch 2025–2027 · Srusti Academy</span>
                 </div>
               </div>
 
@@ -431,9 +356,10 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
                       confetti({ particleCount: 65, spread: 70, colors: ['#E5B957', '#C89B38', '#7A1030', '#FCE7A2'] });
                     }
                   }}
+                  aria-label="Celebrate with us"
                 >
-                  <Heart size={13} />
-                  <span>Cheer for us</span>
+                  <Heart size={13} fill="#C89B38" />
+                  <span>Can't Wait! 🎉</span>
                 </button>
               </div>
             </div>
@@ -481,7 +407,7 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
           >
             <div className="seal-halo" aria-hidden="true" />
             <div className="seal-disc">
-              <svg viewBox="0 0 100 100" fill="none" className="seal-svg">
+              <svg viewBox="0 0 100 100" fill="none" className="seal-svg" aria-hidden="true">
                 <defs>
                   <radialGradient id="rubySealGrad" cx="35%" cy="30%" r="70%">
                     <stop offset="0%" stopColor="#C9184A" />
@@ -495,16 +421,6 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
                     <stop offset="68%" stopColor="#B88A28" />
                     <stop offset="100%" stopColor="#75500A" />
                   </linearGradient>
-                  <linearGradient id="starGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#FFFDF2" />
-                    <stop offset="42%" stopColor="#FCD56B" />
-                    <stop offset="85%" stopColor="#D4A135" />
-                    <stop offset="100%" stopColor="#966B14" />
-                  </linearGradient>
-                  <filter id="sealDropGlow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="2.5" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                  </filter>
                 </defs>
 
                 {/* Outer Bevel Gold Rim */}
@@ -514,54 +430,19 @@ export default function InteractiveEnvelope({ isLetterOpen, onToggleOpen }) {
                 {/* Ruby Wax Core */}
                 <circle cx="50" cy="50" r="43.5" fill="url(#rubySealGrad)" />
 
-                {/* Concentric Gold Beaded Rings */}
-                <circle cx="50" cy="50" r="40" stroke="url(#goldBezelGrad)" strokeWidth="1" strokeDasharray="1.6 2.2" opacity="0.9" />
-                <circle cx="50" cy="50" r="37.5" stroke="#FFEAA7" strokeWidth="0.6" opacity="0.4" />
+                {/* Concentric Gold Beaded Ring */}
+                <circle cx="50" cy="50" r="39" stroke="url(#goldBezelGrad)" strokeWidth="1" strokeDasharray="1.8 2.2" opacity="0.85" />
 
-                {/* Circular Laurel Wreath */}
-                <g stroke="url(#goldBezelGrad)" fill="url(#goldBezelGrad)" strokeWidth="0.4" opacity="0.95">
-                  <path d="M 50 16 C 30 16 20 32 20 50 C 20 66 30 81 48 83" fill="none" strokeWidth="1.2" strokeLinecap="round" />
-                  <path d="M 50 16 C 70 16 80 32 80 50 C 80 66 70 81 52 83" fill="none" strokeWidth="1.2" strokeLinecap="round" />
-
-                  {/* Left Wreath Leaves */}
-                  <path d="M22 36 C17 34 16 28 20 26 C24 28 25 33 22 36 Z" />
-                  <path d="M25 38 C28 34 29 28 24 26 C21 28 22 35 25 38 Z" />
-                  <path d="M18 48 C13 47 12 41 16 38 C20 40 21 45 18 48 Z" />
-                  <path d="M20 50 C24 47 26 41 21 38 C17 40 18 47 20 50 Z" />
-                  <path d="M19 62 C14 62 13 56 18 53 C22 55 22 60 19 62 Z" />
-                  <path d="M22 63 C25 61 28 55 24 52 C20 54 20 60 22 63 Z" />
-                  <path d="M26 73 C22 75 19 70 23 66 C27 67 28 72 26 73 Z" />
-                  <path d="M28 73 C30 70 34 66 31 63 C27 65 26 70 28 73 Z" />
-                  <path d="M38 81 C34 83 32 78 37 74 C41 75 41 80 38 81 Z" />
-
-                  {/* Right Wreath Leaves */}
-                  <path d="M78 36 C83 34 84 28 80 26 C76 28 75 33 78 36 Z" />
-                  <path d="M75 38 C72 34 71 28 76 26 C79 28 78 35 75 38 Z" />
-                  <path d="M82 48 C87 47 88 41 84 38 C80 40 79 45 82 48 Z" />
-                  <path d="M80 50 C76 47 74 41 79 38 C83 40 82 47 80 50 Z" />
-                  <path d="M81 62 C86 62 87 56 82 53 C78 55 78 60 81 62 Z" />
-                  <path d="M78 63 C75 61 72 55 76 52 C80 54 80 60 78 63 Z" />
-                  <path d="M74 73 C78 75 81 70 77 66 C73 67 72 72 74 73 Z" />
-                  <path d="M72 73 C70 70 66 66 69 63 C73 65 74 70 72 73 Z" />
-                  <path d="M62 81 C66 83 68 78 63 74 C59 75 59 80 62 81 Z" />
-
-                  <circle cx="50" cy="83" r="2.2" fill="url(#goldBezelGrad)" />
+                {/* Central Sculpted Tejas Lotus Blossom */}
+                <g fill="url(#goldBezelGrad)">
+                  <path d="M 50 25 C 44 38 45 52 50 64 C 55 52 56 38 50 25 Z" />
+                  <path d="M 50 36 C 40 40 34 50 40 62 C 45 58 48 48 50 36 Z" opacity="0.9" />
+                  <path d="M 50 36 C 60 40 66 50 60 62 C 55 58 52 48 50 36 Z" opacity="0.9" />
+                  <path d="M 45 48 C 30 52 24 64 34 71 C 40 68 44 58 45 48 Z" opacity="0.8" />
+                  <path d="M 55 48 C 70 52 76 64 66 71 C 60 68 56 58 55 48 Z" opacity="0.8" />
+                  <path d="M 32 72 Q 50 78 68 72 Q 50 74 32 72 Z" stroke="url(#goldBezelGrad)" strokeWidth="1.5" />
+                  <circle cx="50" cy="74" r="2" fill="#FFEAA7" />
                 </g>
-
-                {/* Central 5-Pointed Gold Star */}
-                <polygon
-                  points="50,26 55.5,39.5 70,40.5 59,50 63,64 50,55.5 37,64 41,50 30,40.5 44.5,39.5"
-                  fill="url(#starGoldGrad)"
-                  stroke="#8A5A12"
-                  strokeWidth="0.6"
-                  filter="url(#sealDropGlow)"
-                />
-                <polygon points="50,26 50,55.5 44.5,39.5" fill="#FFFBE8" opacity="0.6" />
-                <polygon points="50,26 50,55.5 55.5,39.5" fill="#B8861B" opacity="0.35" />
-                <polygon points="70,40.5 50,55.5 59,50" fill="#FFFBE8" opacity="0.4" />
-                <polygon points="63,64 50,55.5 59,50" fill="#996D13" opacity="0.4" />
-                <polygon points="37,64 50,55.5 41,50" fill="#FFFBE8" opacity="0.4" />
-                <polygon points="30,40.5 50,55.5 41,50" fill="#996D13" opacity="0.4" />
               </svg>
             </div>
           </motion.div>

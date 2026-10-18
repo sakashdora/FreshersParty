@@ -383,6 +383,14 @@
   font-size: 11px;
 }
 
+.gate-actions-cluster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
 /* Acoustic Pause Indicator (~1s silent void) */
 .intro-pause-void {
   display: flex;
@@ -890,6 +898,20 @@
   flex-wrap: wrap;
 }
 
+.hero-date-notice {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 12px;
+  color: #5D4330;
+  margin: -4px auto 14px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+.hero-date-notice strong {
+  color: #6E122E;
+  font-weight: 700;
+}
+
 .hero-pillar-item {
   display: flex;
   align-items: center;
@@ -1040,6 +1062,7 @@
   max-width: 760px;
   margin: 20px auto 0;
   text-align: center;
+  scroll-margin-top: 90px;
 }
 
 /* Ambient glow */
@@ -3667,6 +3690,191 @@
 }
 
 /* Event Essentials Rows */
+/* Redesigned Chronological Event Essentials Hierarchy */
+.essentials-hierarchy-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.essential-milestone-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(8, 17, 34, 0.72);
+  border: 1px solid rgba(200, 155, 56, 0.26);
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.essential-milestone-card.milestone-highlight {
+  background: radial-gradient(ellipse at 50% 0%, rgba(122, 16, 48, 0.35) 0%, rgba(8, 17, 34, 0.85) 100%);
+  border-color: rgba(229, 185, 87, 0.55);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(200, 155, 56, 0.12);
+}
+
+.essential-milestone-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245, 208, 97, 0.6);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 24px rgba(229, 185, 87, 0.18);
+}
+
+.milestone-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.milestone-seq-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #E5B957;
+  text-transform: uppercase;
+}
+
+.milestone-seq-badge.highlight {
+  color: #FFF2CC;
+}
+
+.seq-badge-icon {
+  color: #F5D061;
+}
+
+.milestone-card-body {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.milestone-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7A1030 0%, #4D071B 100%);
+  border: 1.2px solid rgba(200, 155, 56, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F5D061;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(122, 16, 48, 0.3);
+}
+
+.milestone-icon-box.highlight {
+  background: linear-gradient(135deg, #961B40 0%, #580E25 100%);
+  border-color: rgba(245, 208, 97, 0.6);
+  box-shadow: 0 4px 14px rgba(150, 27, 64, 0.45);
+}
+
+.milestone-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.milestone-date-heading {
+  font-family: var(--font-title, 'Cinzel', serif);
+  font-size: 15px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+}
+
+.milestone-time-spec {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 12.5px;
+  color: #FDEBB2;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.milestone-time-venue-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.milestone-bullet-sep {
+  color: rgba(200, 155, 56, 0.6);
+  font-size: 12px;
+}
+
+.milestone-venue-spec {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 12.5px;
+  color: #FAF5EB;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* On The Day Lunch Card */
+.essential-lunch-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(200, 155, 56, 0.07);
+  border: 1px dashed rgba(200, 155, 56, 0.38);
+  border-radius: 12px;
+  padding: 11px 16px;
+  transition: all 0.25s ease;
+}
+
+.essential-lunch-card:hover {
+  background: rgba(200, 155, 56, 0.12);
+  border-color: rgba(245, 208, 97, 0.6);
+}
+
+.lunch-icon-pill {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(122, 16, 48, 0.65);
+  border: 1px solid rgba(200, 155, 56, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F5D061;
+  flex-shrink: 0;
+}
+
+.lunch-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lunch-card-tag {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #E5B957;
+  text-transform: uppercase;
+}
+
+.lunch-card-desc {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 13px;
+  color: #FFFFFF;
+}
+
+.lunch-card-desc strong {
+  color: #FDEBB2;
+  font-weight: 700;
+}
+
+/* Event Essentials Rows Legacy Fallback */
 .essentials-rows-list {
   display: flex;
   flex-direction: column;
@@ -4599,4 +4807,48 @@
   .confluence-master-title .title-gold {
     font-size: 22px;
   }
+}
+
+/* ==========================================================================
+   TRUE INSPIRE FOOTER CREDIT
+   ========================================================================== */
+.signoff-creator-credit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px auto 0;
+  padding: 6px 18px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+}
+
+.signoff-creator-credit:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(212, 175, 55, 0.45);
+  transform: translateY(-1px);
+}
+
+.creator-credit-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.creator-credit-text {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 12px;
+  color: rgba(250, 247, 242, 0.76);
+  letter-spacing: 0.03em;
+}
+
+.creator-credit-text strong {
+  color: #FDEBB2;
+  font-weight: 600;
 }

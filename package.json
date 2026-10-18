@@ -1,7 +1,8 @@
 {
-  "name": "sangama-26",
+  "name": "tejas-26",
+  "version": "3.0.0",
+  "description": "TEJAS ’26 — The Fresh Bloom · Official MCA Freshers Digital Invitation",
   "private": true,
-  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -14,37 +14,20 @@ export default function ClosingSignOff() {
       <div className="signoff-top-border" aria-hidden="true" />
 
       <div className="section-container signoff-container">
-        {/* Subtle Brand Hallmark Pill */}
-        <div className="signoff-hallmark-wrap">
-          <div className="crest-insignia-pill" aria-hidden="true">
-            <span className="crest-star">◆</span>
-            <span className="crest-cohort">TEJAS ’26</span>
-            <span className="crest-sep">·</span>
-            <span className="crest-sub">THE FRESH BLOOM</span>
-            <span className="crest-star">◆</span>
-          </div>
-        </div>
-
-        {/* Minimalist Prestige Attribution Card */}
+        {/* Authentic Academic & Senior Cohort Sign-Off */}
         <div className="signoff-attribution-card">
           <div className="attribution-ambient-glow" aria-hidden="true" />
           
           <div className="attribution-content">
-            <p className="attribution-label">
-              Designed &amp; Developed with <Heart size={14} className="heart-icon" /> by
+            <p className="attribution-quote">
+              “Every great journey begins with a single step — welcome to the MCA family.”
             </p>
-
-            <div className="attribution-creators">
-              <div className="creator-badge true-inspire">
-                <span className="badge-shine" aria-hidden="true" />
-                <span className="creator-text">True Inspire</span>
-              </div>
-              <span className="creator-ampersand">&amp;</span>
-              <div className="creator-badge tejas-team">
-                <span className="badge-shine" aria-hidden="true" />
-                <span className="creator-text">Tejas The Fresh Bloom Team</span>
-              </div>
-            </div>
+            <p className="attribution-dedication">
+              Organized with pride by the <strong>Seniors of MCA (Batch 2025–2027)</strong>
+            </p>
+            <p className="attribution-dept">
+              Department of Computer Applications · Srusti Academy of Management &amp; Technology, Bhubaneswar
+            </p>
           </div>
         </div>
 
@@ -75,6 +58,21 @@ export default function ClosingSignOff() {
           </span>
           <span className="signoff-campus-stamp">
             Srusti Academy of Management &amp; Technology
+          </span>
+        </div>
+
+        {/* True Inspire Credit with Official Asset */}
+        <div className="signoff-creator-credit">
+          <img 
+            src="/true_inspire.jpeg" 
+            alt="True Inspire logo" 
+            className="creator-credit-logo"
+            width="24"
+            height="24"
+            loading="lazy"
+          />
+          <span className="creator-credit-text">
+            Designed &amp; developed by <strong>True Inspire</strong>
           </span>
         </div>
       </div>

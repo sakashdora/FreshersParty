@@ -11,10 +11,10 @@ const TIMELINE_EVENTS = [
     id: 1,
     time: "11:40 AM – 12:30 PM",
     duration: "50 MIN",
-    title: "THE SENIOR-JUNIOR CONFLUENCE",
-    badge: "✦ THE CONFLUENCE",
-    subtitle: "Batch Induction & Camaraderie",
-    desc: "The official gathering begins as juniors and seniors unite under one roof. First introductions to mentors, interactive stage games, spirited banter, and forging bonds that will define your MCA years.",
+    title: "WELCOME & BATCH ICEBREAKERS",
+    badge: "11:40 AM WELCOME",
+    subtitle: "Warm Introductions & Stage Games",
+    desc: "The celebration begins as seniors and juniors unite. Meet your mentors, enjoy lively stage icebreakers, and begin forging bonds that will define your MCA years.",
     icon: Users,
     image: "/confluence_row1_gathering.jpg",
     alt: "Auditorium stage gathering and senior-junior batch welcome"
@@ -24,33 +24,33 @@ const TIMELINE_EVENTS = [
     time: "12:30 PM – 01:30 PM",
     duration: "60 MIN",
     title: "GRAND FELLOWSHIP LUNCH",
-    badge: "✦ 12:30 LUNCH",
-    subtitle: "Fellowship Feast",
-    desc: "A delightful lunch to strengthen bonds, share stories, and create memories with friends, seniors and faculty.",
+    badge: "12:30 PM LUNCH",
+    subtitle: "Festive Fellowship Meal",
+    desc: "A delicious fellowship lunch to relax, share stories, and create fond memories together with batchmates, seniors, and faculty.",
     icon: Utensils,
     image: "/confluence_row2_feast.jpg",
-    alt: "Elegant fellowship banquet dining table"
+    alt: "Fellowship banquet dining table"
   },
   {
     id: 3,
     time: "01:30 PM – 04:15 PM",
     duration: "2 HR 45 MIN",
-    title: "MR. & MRS. FRESHER ’26",
-    badge: "✦ MR. & MRS. FRESHER",
-    subtitle: "Premier Honours & Accolades",
-    desc: "The most awaited title round with stunning performances, confidence, talent and personality. Our freshers take the stage to showcase their best and compete for the prestigious crowns.",
+    title: "STAGE SHOWCASE & FRESHER TITLES ’26",
+    badge: "01:30 PM SHOWCASE",
+    subtitle: "Performances & Title Competitions",
+    desc: "Dance, singing, mimicry, comedy, and the Mr. Fresher and Miss Fresher competitions. The title winners will be announced after the activities conclude.",
     icon: Crown,
     image: "/confluence_row3_crowning.jpg",
-    alt: "Mr. and Mrs. Fresher crowned couple on stage"
+    alt: "Stage showcase and fresher titles crowning"
   },
   {
     id: 4,
     time: "04:15 PM – 05:00 PM",
     duration: "45 MIN",
-    title: "CELEBRATION FINALE & OPEN DJ FLOOR",
-    badge: "✦ UNTIL 5:00 PM",
-    subtitle: "Grand Finale",
-    desc: "Turn up the energy with a lively DJ floor. Dance, celebrate and close the day with music, laughter and unforgettable moments.",
+    title: "OPEN DJ FLOOR & CELEBRATION",
+    badge: "04:15 PM FINALE",
+    subtitle: "Music, Dance & Group Photos",
+    desc: "Turn up the celebration on the open dance floor. Celebrate, dance, take batch photographs, and close the day with unforgettable joy.",
     icon: Music2,
     image: "/confluence_row4_dj.jpg",
     alt: "Open DJ celebration floor with cheering students"
@@ -60,26 +60,29 @@ const TIMELINE_EVENTS = [
 export default function AgendaSection() {
   const handleGoogleCalendar = () => {
     playMicroTap();
-    const title = encodeURIComponent("TEJAS '26 — The Senior-Junior Confluence");
+    const title = encodeURIComponent("TEJAS ’26 — MCA Freshers Celebration");
     const details = encodeURIComponent(
       "Official Freshers Day Celebration for MCA Batch 2026–2028.\n\n" +
-      "Schedule Highlights:\n" +
-      "• 11:40 AM: The Senior-Junior Confluence (Welcome & Camaraderie)\n" +
+      "Key Milestones:\n" +
+      "1. Poster Reveal: Wednesday, 28 October 2026 at 4:00 PM\n" +
+      "2. Main Event: Friday, 30 October 2026 (11:40 AM – 5:00 PM)\n\n" +
+      "Main Event Schedule Highlights (30 Oct):\n" +
+      "• 11:40 AM: Welcome & Batch Icebreakers\n" +
       "• 12:30 PM: Grand Fellowship Lunch\n" +
-      "• 01:30 PM: Mr. & Mrs. Fresher '26 Title Round & Crowning\n" +
-      "• 04:15 PM – 05:00 PM: Celebration Finale & Open DJ Floor\n\n" +
+      "• 01:30 PM – 04:15 PM: Stage Showcase & Fresher Titles ’26 (Performances & Mr./Miss Fresher competitions; title winners announced after activities)\n" +
+      "• 04:15 PM – 05:00 PM: Open DJ Floor & Celebration Dance\n\n" +
       "Venue: JRD Tata Hall, Srusti Academy of Management & Technology, Bhubaneswar."
     );
     const location = encodeURIComponent("JRD Tata Hall, Srusti Academy of Management & Technology, Bhubaneswar");
-    const dates = "20261028T061000Z/20261028T113000Z";
-    window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`, '_blank');
+    const dates = "20261030T061000Z/20261030T113000Z";
+    window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}&ctz=Asia/Kolkata`, '_blank');
   };
 
   return (
     <section 
       id="agenda-flow" 
       className="confluence-showcase-section"
-      aria-label="The Senior-Junior Confluence Programme"
+      aria-label="The Freshers Celebration Programme"
     >
       {/* Background Decorative Ambience & Side Flourishes */}
       <div className="confluence-bg-overlay" aria-hidden="true" />
@@ -120,23 +123,21 @@ export default function AgendaSection() {
         {/* Header Block */}
         <div className="confluence-header-block">
           <div className="confluence-eyebrow-pill">
-            <span className="eyebrow-star">✦</span>
-            <span>28 OCTOBER 2026 · 11:40 AM TO 5:00 PM</span>
-            <span className="eyebrow-star">✦</span>
+            <span>MAIN EVENT: FRIDAY, 30 OCTOBER 2026 · 11:40 AM TO 5:00 PM</span>
           </div>
 
           <h2 className="confluence-master-title">
-            <span className="title-maroon">THE SENIOR-JUNIOR</span>
-            <span className="title-gold">CONFLUENCE</span>
+            <span className="title-maroon">THE CELEBRATION</span>
+            <span className="title-gold">SCHEDULE</span>
           </h2>
 
           <p className="confluence-batch-tagline">
-            TWO BATCHES &nbsp;·&nbsp; ONE STAGE &nbsp;·&nbsp; A TIMELESS BOND
+            TWO BATCHES &nbsp;·&nbsp; ONE STAGE &nbsp;·&nbsp; LIFELONG BONDS
           </p>
 
           <p className="confluence-lead-description">
-            A thoughtfully curated celebration hosted at <strong>JRD Tata Hall</strong>. From the warm welcome of juniors
-            to the grand fellowship lunch and the prestigious crowning of <strong>Mr. &amp; Mrs. Fresher</strong>.
+            A thoughtfully planned celebration hosted at <strong>JRD Tata Hall</strong>. From warm batch introductions
+            to the fellowship lunch, stage performances, and the crowning of <strong>Mr. Fresher &amp; Miss Fresher ’26</strong>.
           </p>
 
           {/* Key Metrics Capsule Ribbon (4 coordinates) */}
@@ -170,7 +171,7 @@ export default function AgendaSection() {
                 <Crown size={16} />
               </div>
               <div className="metric-text-group">
-                <strong className="metric-primary">Mr. &amp; Mrs. Fresher</strong>
+                <strong className="metric-primary">Mr. &amp; Miss Fresher</strong>
                 <span className="metric-secondary">Premier Honours &amp; Titles</span>
               </div>
             </div>

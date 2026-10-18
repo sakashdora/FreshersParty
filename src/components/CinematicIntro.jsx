@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { Volume2, VolumeX, ArrowRight } from 'lucide-react';
 import {
   playMasterSoundtrack,
@@ -32,10 +32,13 @@ export default function CinematicIntro({ onComplete }) {
   const [milestone, setMilestone] = useState(0); // Milestone thresholds 0..10 (Zero RAF state thrashing)
   const [isMuted, setIsMuted] = useState(false);
   const [audioFailed, setAudioFailed] = useState(false);
+  const [showMusicControl, setShowMusicControl] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   const animFrameRef = useRef(null);
   const audioStartTimeRef = useRef(null);
   const stopAudioRef = useRef(null);
+  const musicControlTimerRef = useRef(null);
   const hasFinishedRef = useRef(false);
   const milestoneRef = useRef(0);
 
@@ -43,19 +46,26 @@ export default function CinematicIntro({ onComplete }) {
   const handleFinish = useCallback(() => {
     if (hasFinishedRef.current) return;
     hasFinishedRef.current = true;
+    if (musicControlTimerRef.current) {
+      clearTimeout(musicControlTimerRef.current);
+      musicControlTimerRef.current = null;
+    }
     if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     if (stopAudioRef.current) stopAudioRef.current();
     stopMasterSoundtrack(350);
     onComplete();
   }, [onComplete]);
 
-  // 2. Keyboard accessibility (Escape strictly allowed only after 10s skip gate or on audio failure)
+  // 2. Keyboard accessibility: Escape allowed only after 10s milestone or on audio failure; 'M' key toggles mute
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && introState === 'PLAYING') {
         if (milestoneRef.current >= 10 || audioFailed) {
           handleFinish();
         }
+      } else if (e.key === 'm' || e.key === 'M') {
+        const muted = toggleMasterSoundtrackMute();
+        setIsMuted(muted);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -77,6 +87,12 @@ export default function CinematicIntro({ onComplete }) {
       setIntroState('PLAYING');
       const audioStart = performance.now();
       audioStartTimeRef.current = audioStart;
+
+      // Reveal music control 8.5 seconds after intro begins (8–9s target window)
+      if (musicControlTimerRef.current) clearTimeout(musicControlTimerRef.current);
+      musicControlTimerRef.current = setTimeout(() => {
+        setShowMusicControl(true);
+      }, 8500);
 
       // Start the master soundtrack
       const cleanup = playMasterSoundtrack({
@@ -139,6 +155,7 @@ export default function CinematicIntro({ onComplete }) {
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
       if (stopAudioRef.current) stopAudioRef.current();
+      if (musicControlTimerRef.current) clearTimeout(musicControlTimerRef.current);
       stopIntroAudio();
     };
   }, []);
@@ -181,32 +198,41 @@ export default function CinematicIntro({ onComplete }) {
       />
       <div className="intro-vignette-mask" aria-hidden="true" />
 
-      {/* 2. Top Minimalist Control HUD (Zero layout shift, no escape key indicator) */}
+      {/* 2. Top Minimalist Control HUD */}
       <header className="intro-control-hud">
-        {isPlaying ? (
-          <button
-            type="button"
-            id="intro-sound-toggle-btn"
-            className={`intro-hud-btn sound-toggle ${!isMuted ? 'active' : ''}`}
-            onClick={handleToggleMute}
-            aria-label={isMuted ? 'Unmute soundtrack' : 'Mute soundtrack'}
-          >
-            {isMuted ? <VolumeX size={13} className="hud-icon" /> : <Volume2 size={13} className="hud-icon" />}
-            <span>{isMuted ? 'MUTED' : 'SOUND ON'}</span>
-          </button>
-        ) : (
-          <div className="hud-placeholder" />
-        )}
+        <div className="hud-sound-container" style={{ minWidth: 120, height: 38, display: 'flex', alignItems: 'center' }}>
+          {isPlaying && (
+            <motion.button
+              type="button"
+              id="intro-sound-toggle-btn"
+              className={`intro-hud-btn sound-toggle ${!isMuted ? 'active' : ''}`}
+              onClick={handleToggleMute}
+              aria-label={isMuted ? 'Unmute soundtrack (or press M)' : 'Mute soundtrack (or press M)'}
+              aria-hidden={!showMusicControl}
+              tabIndex={showMusicControl ? 0 : -1}
+              initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
+              animate={{
+                opacity: showMusicControl ? 1 : 0,
+                y: prefersReducedMotion ? 0 : (showMusicControl ? 0 : -6),
+                pointerEvents: showMusicControl ? 'auto' : 'none'
+              }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {isMuted ? <VolumeX size={13} className="hud-icon" /> : <Volume2 size={13} className="hud-icon" />}
+              <span>{isMuted ? 'MUTED' : 'SOUND ON'}</span>
+            </motion.button>
+          )}
+        </div>
 
-        {/* Skip button — strictly locked until 10.0s of actual playback or audio failure */}
+        {/* Skip button — strictly locked until 10.0s climax threshold or audio failure */}
         {isPlaying ? (
           <button
             type="button"
             id="intro-skip-btn"
             className={`intro-hud-btn skip-pill ${isSkipAvailable ? 'is-available' : 'is-locked'}`}
-            onClick={handleFinish}
+            onClick={isSkipAvailable ? handleFinish : undefined}
             disabled={!isSkipAvailable}
-            aria-label="Skip to invitation"
+            aria-label="Skip intro to invitation"
           >
             <span>Skip Intro</span>
             <ArrowRight size={13} className="hud-arrow" />
@@ -219,10 +245,6 @@ export default function CinematicIntro({ onComplete }) {
       {/* 3. Centerpiece Stage: Gate Mode vs. Active Title Sequence */}
       <main className="intro-stage-monument">
         {introState === 'GATE' ? (
-          /* ===================================================================
-             INITIAL INTERACTION GATE (Option A — Dedicated Modal Overture)
-             No artificial Roman badges, filler captions, or duration countdowns.
-             =================================================================== */
           <motion.div
             className="intro-gate-card"
             initial={{ opacity: 0, y: 16 }}
@@ -232,7 +254,7 @@ export default function CinematicIntro({ onComplete }) {
           >
             <div className="gate-prestige-eyebrow">
               <span className="gate-rail" />
-              <span>MCA BATCH 2026 · SRUSTI ACADEMY</span>
+              <span>DEPARTMENT OF COMPUTER APPLICATIONS · SRUSTI ACADEMY OF MANAGEMENT &amp; TECHNOLOGY</span>
               <span className="gate-rail right" />
             </div>
 
@@ -245,19 +267,21 @@ export default function CinematicIntro({ onComplete }) {
             </p>
 
             <p className="gate-instruction-lead">
-              A ceremonial invitation welcoming the incoming MCA batch.
+              With love, from your seniors to the MCA Batch of 2026–2028.
             </p>
 
-            <button
-              type="button"
-              id="intro-open-invitation-btn"
-              className="intro-open-invitation-btn"
-              onClick={handleOpenInvitation}
-            >
-              <span className="btn-sparkle-glyph">✦</span>
-              <span className="btn-label-text">OPEN INVITATION</span>
-              <span className="btn-sparkle-glyph">✦</span>
-            </button>
+            <div className="gate-actions-cluster">
+              <button
+                type="button"
+                id="intro-open-invitation-btn"
+                className="intro-open-invitation-btn"
+                onClick={handleOpenInvitation}
+                aria-label="Experience opening sequence"
+              >
+                <span className="btn-label-text">EXPERIENCE OPENING</span>
+                <ArrowRight size={15} style={{ marginLeft: 6 }} />
+              </button>
+            </div>
           </motion.div>
         ) : introState === 'PAUSE' ? (
           /* ===================================================================

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Info, Calendar, MapPin, Clock, Utensils } from 'lucide-react';
+import { Info, Calendar, MapPin, Clock, Utensils, Sparkles } from 'lucide-react';
 
 export default function DressCodeEssentials() {
   const dressCodeItems = [
@@ -27,33 +27,6 @@ export default function DressCodeEssentials() {
       title: 'Seniors Girls',
       outfit: 'Saree',
       image: '/dress_senior_girl_v2.jpg'
-    }
-  ];
-
-  const essentials = [
-    {
-      id: 'date',
-      icon: Calendar,
-      title: '28 October 2026',
-      subtitle: 'Event Date'
-    },
-    {
-      id: 'venue',
-      icon: MapPin,
-      title: 'JRD Tata Hall',
-      subtitle: 'Venue'
-    },
-    {
-      id: 'time',
-      icon: Clock,
-      title: '11:40 AM',
-      subtitle: 'Reporting Time'
-    },
-    {
-      id: 'lunch',
-      icon: Utensils,
-      title: '12:30 PM',
-      subtitle: 'Lunch Break'
     }
   ];
 
@@ -100,18 +73,16 @@ export default function DressCodeEssentials() {
         {/* Section Header */}
         <div className="essentials-header-block">
           <div className="essentials-eyebrow">
-            <span className="eyebrow-bullet">·</span>
-            <span>DRESS CODE &amp; EVENT ESSENTIALS</span>
-            <span className="eyebrow-bullet">·</span>
+            <span>GUIDELINES &amp; LOGISTICS</span>
           </div>
 
           <h2 className="essentials-main-title">
-            DRESS CODE &amp; EVENT ESSENTIALS
+            DRESS CODE &amp; ESSENTIALS
           </h2>
 
           <p className="essentials-lead">
-            Come dressed in your best and be a part of this memorable celebration.<br />
-            Here’s everything you need to know for a seamless experience.
+            Come dressed in your finest and celebrate this memorable day with us.<br />
+            Here is everything you need to know for a smooth, enjoyable celebration.
           </p>
         </div>
 
@@ -170,29 +141,66 @@ export default function DressCodeEssentials() {
                 <h3 className="panel-title">EVENT ESSENTIALS</h3>
               </div>
               <p className="panel-subtitle">
-                Key details at a glance.
+                Everything you need to know about TEJAS 2026.
               </p>
             </div>
 
-            {/* 4 Vertical Info Rows */}
-            <div className="essentials-rows-list">
-              {essentials.map((item) => {
-                const IconComponent = item.icon;
-                return (
-                  <div 
-                    key={item.id}
-                    className="essential-info-tile"
-                  >
-                    <div className="tile-icon-box">
-                      <IconComponent size={20} className="tile-icon" />
-                    </div>
-                    <div className="tile-content">
-                      <strong className="tile-value">{item.title}</strong>
-                      <span className="tile-label">{item.subtitle}</span>
+            {/* Chronological Milestones Hierarchy */}
+            <div className="essentials-hierarchy-container">
+              {/* 01 — POSTER REVEAL */}
+              <div className="essential-milestone-card">
+                <div className="milestone-badge-row">
+                  <span className="milestone-seq-badge">
+                    <Sparkles size={12} className="seq-badge-icon" />
+                    01 — POSTER REVEAL
+                  </span>
+                </div>
+                <div className="milestone-card-body">
+                  <div className="milestone-icon-box">
+                    <Calendar size={18} />
+                  </div>
+                  <div className="milestone-details">
+                    <strong className="milestone-date-heading">Wednesday, 28 October 2026</strong>
+                    <span className="milestone-time-spec">4:00 PM</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 02 — TEJAS 2026 · THE FRESH BLOOM */}
+              <div className="essential-milestone-card milestone-highlight">
+                <div className="milestone-badge-row">
+                  <span className="milestone-seq-badge highlight">
+                    <Calendar size={12} className="seq-badge-icon" />
+                    02 — TEJAS 2026 · THE FRESH BLOOM
+                  </span>
+                </div>
+                <div className="milestone-card-body">
+                  <div className="milestone-icon-box highlight">
+                    <MapPin size={18} />
+                  </div>
+                  <div className="milestone-details">
+                    <strong className="milestone-date-heading">Friday, 30 October 2026</strong>
+                    <div className="milestone-time-venue-row">
+                      <span className="milestone-time-spec">11:40 AM – 5:00 PM</span>
+                      <span className="milestone-bullet-sep" aria-hidden="true">•</span>
+                      <span className="milestone-venue-spec">JRD Tata Hall</span>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              </div>
+
+              {/* ON THE DAY: Fellowship Lunch */}
+              <div className="essential-lunch-card">
+                <div className="lunch-icon-pill">
+                  <Utensils size={15} />
+                </div>
+                <div className="lunch-card-content">
+                  <span className="lunch-card-tag">ON THE DAY</span>
+                  <div className="lunch-card-desc">
+                    <strong>12:30 PM</strong> — Grand Fellowship Lunch
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
